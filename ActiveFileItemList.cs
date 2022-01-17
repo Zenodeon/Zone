@@ -1,0 +1,88 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Windows.Controls;
+using System.Text;
+using Zone.View;
+
+namespace Zone
+{
+    public class ActiveFileItemList<T> : BindingList<T> where T : ContentPresenter
+    {
+        //private List<FileItem> activeLogM = new List<FileItem>();
+
+        private SortedList<int, FileItem> pairs = new SortedList<int, FileItem>();
+
+        public void Initialize()
+        {
+            this.AllowEdit = true;
+            this.AllowNew = true;
+            this.AllowRemove = true;
+        }
+
+        public void Add(FileItem item)
+        {
+            int id = item.id;
+            pairs.Add(id, item);
+
+            int i = pairs.IndexOfKey(id);
+
+            this.Insert(i, (T)item.frame);
+        }
+
+        private void dummy()
+        {
+
+        }
+
+        public void Remove(FileItem item)
+        {
+            //activeLogM.Remove(logM);
+            pairs.Remove(item.id);
+
+            base.Remove((T)item.frame);
+        }
+
+        public void Add(List<FileItem> itemList)
+        {
+            this.RaiseListChangedEvents = false;
+
+            foreach (FileItem item in itemList)
+                Add(item);
+
+            this.RaiseListChangedEvents = true;
+            this.ResetBindings();
+        }
+
+        public void Remove(List<FileItem> itemList)
+        {
+            this.RaiseListChangedEvents = false;
+
+            foreach (FileItem item in itemList)
+                Remove(item);
+
+            this.RaiseListChangedEvents = true;
+            this.ResetBindings();
+        }
+
+        public new void Clear()
+        {
+            //activeLogM.Clear();
+            pairs.Clear();
+
+            base.Clear();
+        }
+
+
+        [Obsolete]
+        public new void Add(T item)
+        {
+        }
+
+        [Obsolete]
+        public new void Remove(T item)
+        {
+        }
+    }
+}

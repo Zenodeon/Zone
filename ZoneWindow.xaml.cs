@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,22 +14,55 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using DebugLogger.Wpf;
+using Ookii.Dialogs.Wpf;
+using Zone.View;
 
 namespace Zone
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class ZoneWindow : Window
     {
-        public MainWindow()
+        public ZoneWindow()
         {
             DLog.Instantiate();
 
             InitializeComponent();
         }
 
-        private void Bar_Mouse(object sender, MouseButtonEventArgs e)
+        private void OpenDialog(object sender, RoutedEventArgs e)
+        {
+            VistaFolderBrowserDialog fileDialog = new VistaFolderBrowserDialog();
+
+            bool? success = fileDialog.ShowDialog();
+            bool selected = success == null ? false : success.Value;
+            if (selected)
+                LoadDirectory(fileDialog.SelectedPath);
+        }
+
+        private void LoadDirectory(string directoryPath)
+        {
+            DLog.Log("SelectedPath : " + directoryPath);
+
+            int count = 0;
+            foreach (string path in Directory.GetFiles(directoryPath))
+            {
+                FileItem fileItem = new FileItem(count);
+                count++;
+
+                CFileInfo fileInfo = new CFileInfo(path);
+                fileItem.Configure(fileInfo);
+
+                fileView.AddFileItem(fileItem);
+            }
+
+
+        }
+
+        #region UI Interface
+
+        private void OnBarDrag(object sender, MouseButtonEventArgs e)
         {
             DragMove();
         }
@@ -50,5 +84,7 @@ namespace Zone
         {
             WindowState = WindowState.Minimized;
         }
+
+        #endregion  
     }
 }
