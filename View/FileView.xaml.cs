@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using DebugLogger.Wpf;
-
+using WpfToolkit.Controls;
 namespace Zone.View
 {
     /// <summary>
@@ -21,7 +21,7 @@ namespace Zone.View
     /// </summary>
     public partial class FileView : UserControl
     {
-        private ScrollViewer fileViewer { get; set; }
+        //private WrapPanel filePanel { get; set; }
 
         ActiveFileItemList<ContentPresenter> activeFiles = new ActiveFileItemList<ContentPresenter>();
 
@@ -30,7 +30,7 @@ namespace Zone.View
             InitializeComponent();
 
             fileControl.ApplyTemplate();
-            fileViewer = (ScrollViewer)fileControl.Template.FindName("fileViewer", fileControl);
+            //filePanel = (WrapPanel)fileControl.Template.FindName("filePanel", fileControl);
 
             activeFiles.Initialize();
 

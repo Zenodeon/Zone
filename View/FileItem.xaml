@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:Zone.View"
              mc:Ignorable="d" 
              Background="Transparent"
-             Height="128" Width="128">
+             Height="128" Width="128" Padding="0.5" >
     <Grid Background="White">
             
     </Grid>

@@ -10,6 +10,7 @@
   <ItemGroup>
     <PackageReference Include="DebugLogger.Wpf" Version="1.0.2" />
     <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
+    <PackageReference Include="VirtualizingWrapPanel" Version="1.5.7" />
   </ItemGroup>
 
 </Project>
