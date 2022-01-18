@@ -6,8 +6,8 @@
              xmlns:local="clr-namespace:Zone.View"
              mc:Ignorable="d" 
              Background="Transparent"
-             Height="128" Width="128" Padding="0.5" >
-    <Grid Background="White">
-            
+             Height="112" Width="112" Padding="0.5" >
+    <Grid>
+        <Image Name="filePreview" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
     </Grid>
 </UserControl>

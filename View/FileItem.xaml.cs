@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,6 +13,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using DebugLogger.Wpf;
+using WpfAnimatedGif;
 
 namespace Zone.View
 {
@@ -22,16 +25,6 @@ namespace Zone.View
     {
         public ContentPresenter frame { get; set; }
         public int id { get; set; }
-
-        public FileItem()
-        {
-            InitializeComponent();
-
-            frame = new ContentPresenter();
-            this.id = -1;
-
-            frame.Content = this;
-        }
 
         public FileItem(int id)
         {
@@ -45,7 +38,14 @@ namespace Zone.View
 
         public void Configure(CFileInfo cFileInfo)
         {
+            ThumbnailExtactorManager._instance.GetThumbnailPreview(cFileInfo.filePath,
+                thumbnail);
+        }
 
+        public void thumbnail(BitmapImage image)
+        {
+            DLog.Log("thumbnail");
+            Dispatcher.BeginInvoke(() => ImageBehavior.SetAnimatedSource(filePreview, image), DispatcherPriority.Normal);
         }
     }
 }

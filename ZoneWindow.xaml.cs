@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 using DebugLogger.Wpf;
 using Ookii.Dialogs.Wpf;
 using Zone.View;
+using WpfAnimatedGif;
 
 namespace Zone
 {
@@ -29,6 +30,9 @@ namespace Zone
             DLog.Instantiate();
 
             InitializeComponent();
+
+            new ThumbnailExtactorManager().Instantiate();
+
         }
 
         private void OpenDialog(object sender, RoutedEventArgs e)
