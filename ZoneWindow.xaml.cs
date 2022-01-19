@@ -16,7 +16,6 @@ using System.Windows.Shapes;
 using DebugLogger.Wpf;
 using Ookii.Dialogs.Wpf;
 using Zone.View;
-using WpfAnimatedGif;
 
 namespace Zone
 {
@@ -60,8 +59,6 @@ namespace Zone
 
                 fileView.AddFileItem(fileItem);
             }
-
-
         }
 
         #region UI Interface

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using DebugLogger.Wpf;
+using System.IO;
 
 public class ThumbnailExtactor 
 {
@@ -13,28 +14,15 @@ public class ThumbnailExtactor
     private int duration = 3;
     private int fps = 30;
 
-    public async void GetFrames(string path, Action<BitmapImage> callback)
+    public async void GetFrame(string path, Action<MemoryStream> callback)
     {
-        BitmapImage gif = new BitmapImage();
         await Task.Run(() =>
-        {
-            gif = FFMPEGProccess.ConvertToGIF(path, duration, fps, width, height);
-            DLog.Log("ffmpeg done");
-        });
-        callback.Invoke(gif);      
+            callback.Invoke(FFMPEGProccess.GetPNG(path, duration, fps, width, height)));
     }
 
-    //IEnumerator ApplyFrames(List<GIFFrame> frames, Action<List<GIFFrame>> callback)
-    //{
-    //    //yield return null;
-
-    //    //foreach (GIFFrame frame in frames)
-    //    //{
-    //    //    frame.ApplyTexture();
-    //    //    yield return new WaitForSeconds(0.001f);
-    //    //}
-
-    //    //callback.Invoke(frames);
-    //    //Debug.Log("Apply done");
-    //}
+    public async void GetFrames(string path, Action<MemoryStream> callback)
+    {
+        await Task.Run(() =>
+            callback.Invoke(FFMPEGProccess.GetGIF(path, duration, fps, width, height)));
+    }
 }

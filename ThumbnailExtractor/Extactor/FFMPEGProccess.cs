@@ -4,13 +4,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using DebugLogger.Wpf;
 
 public static class FFMPEGProccess
 {
     public static string ffmpegPath = @"C:\Users\Admin\Desktop\ffmpeg\bin\ffmpeg.exe";
     public static string ffprobePath = @"C:\Users\Admin\Desktop\ffmpeg\bin\ffprobe.exe";
 
-    public static BitmapImage ConvertToGIF(string path, int duration, int fps, int width, int height)
+    public static MemoryStream GetGIF(string path, int duration, int fps, int width, int height)
     {
         ProcessStartInfo ffmpegProcessInfo = new ProcessStartInfo()
         {
@@ -25,19 +26,39 @@ public static class FFMPEGProccess
         ffmpegProcess.StartInfo = ffmpegProcessInfo;
         ffmpegProcess.Start();
 
-        BitmapImage ffmpegImage = new BitmapImage();
+        using Stream ffmpegOutput = ffmpegProcess.StandardOutput.BaseStream;
+        MemoryStream ffmpegMemory = new MemoryStream();
+
+        ffmpegOutput.CopyTo(ffmpegMemory);
+
+        DLog.Log("ffmpeg GIF done");
+
+        return ffmpegMemory;
+    }
+
+    public static MemoryStream GetPNG(string path, int duration, int fps, int width, int height)
+    {
+        DLog.Log("Starting");
+        ProcessStartInfo ffmpegProcessInfo = new ProcessStartInfo()
+        {
+            FileName = ffmpegPath,
+            Arguments = $"-i \"{path}\" -vf \"scale='if(gt(iw,ih), -1, {width})':'if(gt(ih,iw), -1, {height})',crop={width}:{height}\" -vframes 1 pipe:.png",
+            RedirectStandardOutput = true,
+            UseShellExecute = false,
+            CreateNoWindow = true,
+        };
+
+        Process ffmpegProcess = new Process();
+        ffmpegProcess.StartInfo = ffmpegProcessInfo;
+        ffmpegProcess.Start();
 
         using Stream ffmpegOutput = ffmpegProcess.StandardOutput.BaseStream;
         MemoryStream ffmpegMemory = new MemoryStream();
 
         ffmpegOutput.CopyTo(ffmpegMemory);
 
-        ffmpegImage.BeginInit();
-        ffmpegImage.StreamSource = ffmpegMemory;
-        ffmpegImage.CacheOption = BitmapCacheOption.OnLoad;
-        ffmpegImage.EndInit();
-        ffmpegImage.Freeze();
+        DLog.Log("ffmpeg done");
 
-        return ffmpegImage;
+        return ffmpegMemory;
     }
 }

@@ -3,154 +3,142 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.IO;
 
-public class ThumbnailExtactorManager 
+public class ThumbnailExtactorManager
 {
     public static ThumbnailExtactorManager _instance;
 
     private ThumbnailExtactor extactor;
 
     private int maxSFECount = 8;
-    private int maxMFECount = 1;
+    private int maxMFECount = 8;
 
     Queue<int> availableSFExtractor = new Queue<int>();
     Queue<int> availableMFExtractor = new Queue<int>();
 
-    //Queue<SingleFrameRequest> singleFrameRequests = new Queue<SingleFrameRequest>();
-    Queue<MultiFrameRequest> multiFrameRequests = new Queue<MultiFrameRequest>();
+    Queue<FrameRequest> singleFrameRequests = new Queue<FrameRequest>();
+    Queue<FrameRequest> multiFrameRequests = new Queue<FrameRequest>();
 
     public void Instantiate()
     {
         _instance = this;
         extactor = new ThumbnailExtactor();
 
+        for (int i = 0; i < maxSFECount; i++)
+            availableSFExtractor.Enqueue(i);
+
         for (int i = 0; i < maxMFECount; i++)
             availableMFExtractor.Enqueue(i);
     }
 
-    public void test()
+    public void GetThumbnail(string url, Action<MemoryStream> singleFrameCallback)
     {
-        DebugLogger.Wpf.DLog.Log("works");
+        FrameRequest singleFrameRequest = new FrameRequest(url, RequestType.Single, singleFrameCallback, DequeueExtractor);
+        ProcessRequest(singleFrameRequest);
     }
 
-    //public void GetThumbnail(string url, ulong singleFrameIndex, Action<Texture> singleFrameCallback)
-    //{
-    //    SingleFrameRequest singleFrameRequest = new SingleFrameRequest(url, singleFrameIndex, singleFrameCallback, DequeueSFE);
-    //    ProcessRequest(singleFrameRequest);
-    //}
-
-    public void GetThumbnailPreview(string url, Action<BitmapImage> multiFrameCallBack)
+    public void GetThumbnailPreview(string url, Action<MemoryStream> multiFrameCallBack)
     {
-        MultiFrameRequest multiFrameRequest = new MultiFrameRequest(url, multiFrameCallBack, DequeueMFE);
+        FrameRequest multiFrameRequest = new FrameRequest(url, RequestType.Preview, multiFrameCallBack, DequeueExtractor);
         ProcessRequest(multiFrameRequest);
     }
 
-    //public void GetThumbnails(string url, ulong singleFrameIndex, int multiFrameDuration, Action<Texture> singleFrameCallback, Action<List<GIFFrame>> multiFrameCallBack)
-    //{
-    //    GetThumbnail(url, singleFrameIndex, singleFrameCallback);
-    //    GetThumbnailPreview(url, multiFrameCallBack);
-    //}
+    public void GetThumbnails(string url, Action<MemoryStream> singleFrameCallback, Action<MemoryStream> multiFrameCallBack)
+    {
+        GetThumbnail(url, singleFrameCallback);
+        GetThumbnailPreview(url, multiFrameCallBack);
+    }
 
-    //private void ProcessRequest(SingleFrameRequest request, int withID = -1)
-    //{
-    //    if (withID == -1)
-    //    {
-    //        if (availableSFExtractor.Count != 0)
-    //        {
-    //            int id;
-    //            id = availableSFExtractor.Dequeue();
-
-    //            request.id = id;
-    //            SFExtractorDictionary[id].ExecuteRequest(request);
-    //        }
-    //        else
-    //            singleFrameRequests.Enqueue(request);
-    //    }
-    //    else
-    //    {
-    //        request.id = withID;
-    //        SFExtractorDictionary[withID].ExecuteRequest(request);
-    //    }
-    //}
-
-    private void ProcessRequest(MultiFrameRequest request, int withID = -1)
+    private void ProcessRequest(FrameRequest request, int withID = -1)
     {
         if (withID == -1)
         {
-            if (availableMFExtractor.Count != 0)
-            {
-                int id;
-                id = availableMFExtractor.Dequeue();
-                request.id = id;
+            int extractorID = GetAvailableExtractor(request.requestType);
 
-                extactor.GetFrames(request.url, request.callback);
+            if (extractorID == -1)
+            {
+                if (request.requestType == RequestType.Single)
+                    singleFrameRequests.Enqueue(request);
+                else
+                    multiFrameRequests.Enqueue(request);
             }
             else
-                multiFrameRequests.Enqueue(request);
+                SendFrame(request, extractorID);
         }
         else
-        {
-            request.id = withID;
-            extactor.GetFrames(request.url, request.callback);
-        }
+            SendFrame(request, withID);
     }
 
-    //private void DequeueSFE(int id)
-    //{
-    //    if (singleFrameRequests.Count == 0)
-    //        availableSFExtractor.Enqueue(id);
-    //    else
-    //        ProcessRequest(singleFrameRequests.Dequeue(), withID: id);
-    //}
-
-    private void DequeueMFE(int id)
+    private void SendFrame(FrameRequest request, int extractorID)
     {
+        request.id = extractorID;
 
-        if (multiFrameRequests.Count == 0)
-            availableMFExtractor.Enqueue(id);
-        else
-            ProcessRequest(multiFrameRequests.Dequeue(), withID: id);
+        if (request.requestType == RequestType.Single)
+            extactor.GetFrame(request.url, request.callback);
+
+        if (request.requestType == RequestType.Preview)
+            extactor.GetFrames(request.url, request.callback);
     }
 
-    //public class SingleFrameRequest
-    //{
-    //    public int id = -1;
+    private int GetAvailableExtractor(RequestType type)
+    {
+        int extractorID = -1;
 
-    //    public string url;
-    //    public ulong frameIndex;
+        if (type == RequestType.Single)
+            if (availableSFExtractor.Count != 0)
+                extractorID = availableSFExtractor.Dequeue();
 
-    //    public Action<Texture> callback;
+        if (type == RequestType.Preview)
+            if (availableMFExtractor.Count != 0)
+                extractorID = availableMFExtractor.Dequeue();
 
-    //    public SingleFrameRequest(string url, ulong frameIndex,  Action<Texture> callback, Action<int> onComplete)
-    //    {
-    //        this.url = url;
-    //        this.frameIndex = frameIndex;
+        return extractorID;
+    }
 
-    //        this.callback = (Texture texture) =>
-    //        {
-    //            callback.Invoke(texture);
-    //            onComplete.Invoke(id);
-    //        };
-    //    }
-    //}
+    private void DequeueExtractor(int id, RequestType requestType)
+    {
+        if (requestType == RequestType.Single)
+        {
+            if (singleFrameRequests.Count == 0)
+                availableSFExtractor.Enqueue(id);
+            else
+                ProcessRequest(singleFrameRequests.Dequeue(), withID: id);
+        }
 
-    [Serializable]
-    public class MultiFrameRequest
+        if (requestType == RequestType.Preview)
+        {
+            if (multiFrameRequests.Count == 0)
+                availableMFExtractor.Enqueue(id);
+            else
+                ProcessRequest(multiFrameRequests.Dequeue(), withID: id);
+        }
+    }
+
+    public class FrameRequest
     {
         public int id = -1;
+        public RequestType requestType;
 
         public string url;
 
-        public Action<BitmapImage> callback;
+        public Action<MemoryStream> callback;
 
-        public MultiFrameRequest(string url, Action<BitmapImage> callback, Action<int> onComplete)
+        public FrameRequest(string url, RequestType requestType, Action<MemoryStream> callback, Action<int, RequestType> onComplete)
         {
             this.url = url;
-            this.callback = (BitmapImage extractedData) =>
+            this.requestType = requestType;
+            this.callback = (MemoryStream thumbnailStream) =>
             {
-                callback.Invoke(extractedData);
-                onComplete.Invoke(id);
+                callback.Invoke(thumbnailStream);
+                onComplete.Invoke(id, requestType);
             };
         }
+    }
+
+    public enum RequestType
+    {
+        Single,
+        Preview
     }
 }

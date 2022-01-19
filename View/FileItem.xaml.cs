@@ -14,7 +14,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using DebugLogger.Wpf;
-using WpfAnimatedGif;
+using XamlAnimatedGif;
+using System.IO;
 
 namespace Zone.View
 {
@@ -38,14 +39,18 @@ namespace Zone.View
 
         public void Configure(CFileInfo cFileInfo)
         {
-            ThumbnailExtactorManager._instance.GetThumbnailPreview(cFileInfo.filePath,
-                thumbnail);
+            ThumbnailExtactorManager._instance.GetThumbnail(cFileInfo.filePath, SetThumbnail);
+            ThumbnailExtactorManager._instance.GetThumbnailPreview(cFileInfo.filePath, SetThumbnailPreview);
         }
 
-        public void thumbnail(BitmapImage image)
+        private void SetThumbnail(MemoryStream thumbnailStream)
         {
-            DLog.Log("thumbnail");
-            Dispatcher.BeginInvoke(() => ImageBehavior.SetAnimatedSource(filePreview, image), DispatcherPriority.Normal);
+            Dispatcher.BeginInvoke(() => AnimationBehavior.SetSourceStream(filePreview, thumbnailStream), DispatcherPriority.Normal);
+        }
+
+        private void SetThumbnailPreview(MemoryStream thumbnailStream)
+        {
+            Dispatcher.BeginInvoke(() => AnimationBehavior.SetSourceStream(filePreview, thumbnailStream), DispatcherPriority.Normal);
         }
     }
 }
