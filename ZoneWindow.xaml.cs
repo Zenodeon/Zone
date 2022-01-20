@@ -34,6 +34,12 @@ namespace Zone
 
         }
 
+        private void DO(object sender, RoutedEventArgs e)
+        {
+            Zoner zoner = new Zoner();
+            zoner.ApplyZoneMetadata();
+        }
+
         private void OpenDialog(object sender, RoutedEventArgs e)
         {
             VistaFolderBrowserDialog fileDialog = new VistaFolderBrowserDialog();
