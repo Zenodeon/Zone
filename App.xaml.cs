@@ -1,4 +1,6 @@
-﻿using System;
+﻿global using DebugLogger.Wpf;
+
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;

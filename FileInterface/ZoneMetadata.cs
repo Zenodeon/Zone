@@ -8,13 +8,13 @@ namespace Zone
 {
     public class ZoneMetadata
     {
-        public string testString;
+        public string testString = string.Empty;
         public int testInt;
 
         public List<string> testListString = new List<string>();
         public List<int> testListInt = new List<int>();
 
-        public ZoneMetadata()
+        public void dummyFill()
         {
             testString = "test text";
             testInt = 10312;

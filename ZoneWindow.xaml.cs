@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 using DebugLogger.Wpf;
 using Ookii.Dialogs.Wpf;
 using Zone.View;
+using Zone.FileInterface;
 
 namespace Zone
 {
@@ -36,8 +37,8 @@ namespace Zone
 
         private void DO(object sender, RoutedEventArgs e)
         {
-            Zoner zoner = new Zoner();
-            zoner.ApplyZoneMetadata();
+            ZoneLink link = new ZoneLink();
+            link.ApplyMetadata();
         }
 
         private void OpenDialog(object sender, RoutedEventArgs e)
