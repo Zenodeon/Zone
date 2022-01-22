@@ -25,20 +25,25 @@ namespace Zone
     /// </summary>
     public partial class ZoneWindow : Window
     {
+        ZoneLink testLink = new ZoneLink();
+
         public ZoneWindow()
         {
             DLog.Instantiate();
 
             InitializeComponent();
 
-            new ThumbnailExtactorManager().Instantiate();
-
+            new ThumbnailExtactorManager().Instantiate();     
         }
 
         private void DO(object sender, RoutedEventArgs e)
         {
-            ZoneLink link = new ZoneLink();
-            link.ApplyMetadata();
+            testLink.ApplyMetadata();
+        }
+
+        private void DO2(object sender, RoutedEventArgs e)
+        {
+            testLink.RemoveMetadata();
         }
 
         private void OpenDialog(object sender, RoutedEventArgs e)

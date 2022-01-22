@@ -9,25 +9,71 @@ namespace Zone.FileInterface
 {
     public static class ZoneMetadataHelper
     {
-        private const string header = "[_ZMD-=<[";
+        private const string header = " [_ZMD-=<[";
 
-        private const string footer1 = "]=[";
-        private const string footer2 = "]>=-ZMD_]";
+        private const string footer = "]>=-ZMD_]";
 
         public static byte[] GetEmbedData(ZoneMetadata metadata)
         {
             string json = JsonConvert.SerializeObject(metadata);
 
             string rawData = UUtility.ToBase64String(json);
-            int dataLength = rawData.Length;
 
-            string embedData = $"{header}{rawData}{footer1}{dataLength}{footer2}";
+            string embedData = $"{header}{rawData}{footer}";
             return Encoding.UTF8.GetBytes(embedData);
         }
 
-        public static bool RemoveEmbeddedData(ref string data)
+        public static bool RemoveEmbeddedData(string decodedData, ref byte[] data)
         {
-            DLog.Log(data.LastIndexOf(footer2) + "");
+            int headerIndex = decodedData.LastIndexOf(header);
+
+            if (headerIndex == -1)
+                return false;
+
+            int footerIndex = decodedData.IndexOf(footer);
+
+            if(footerIndex == -1)
+                return false;
+
+            int footerEndIndex = footerIndex + footer.Length;
+            footerEndIndex -= headerIndex;
+
+            decodedData = decodedData.Substring(headerIndex, footerEndIndex);
+
+            byte[] bytesToRemove = Encoding.UTF8.GetBytes(decodedData);
+
+            int patternIndex = data.LastIndexOfPattern(bytesToRemove);
+
+            DLog.Log("Data Length Before : " + data.Length);
+
+            DLog.Log("Pattern Index : " + patternIndex);
+
+
+            List<byte> dataByteList = new List<byte>(data);
+            dataByteList.RemoveRange(patternIndex, bytesToRemove.Length);
+
+            data = dataByteList.ToArray();
+
+            DLog.Log("Data Length After : " + data.Length);
+
+            return false;
+        }
+
+        public static bool dads(ref string data)
+        {
+            int headerIndex = data.LastIndexOf(header);
+
+            if (headerIndex == -1)
+                return true;
+
+            data = data.Remove(0, headerIndex);
+
+            int footerIndex = data.IndexOf(footer);
+
+            data = data.Substring(0, footerIndex);
+
+            DLog.Log(headerIndex + "");
+            //DLog.Log(data);
 
             return false;
         }
