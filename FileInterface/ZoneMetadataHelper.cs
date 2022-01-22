@@ -9,18 +9,23 @@ namespace Zone.FileInterface
 {
     public static class ZoneMetadataHelper
     {
-        private const string header = " [_ZMD-=<[";
+        private const string header = "[_ZMD-=<[";
 
         private const string footer = "]>=-ZMD_]";
 
         public static byte[] GetEmbedData(ZoneMetadata metadata)
+        {
+            return Encoding.UTF8.GetBytes(GetEmbedDataString(metadata));
+        }
+
+        public static string GetEmbedDataString(ZoneMetadata metadata)
         {
             string json = JsonConvert.SerializeObject(metadata);
 
             string rawData = UUtility.ToBase64String(json);
 
             string embedData = $"{header}{rawData}{footer}";
-            return Encoding.UTF8.GetBytes(embedData);
+            return embedData;
         }
 
         public static bool RemoveEmbeddedData(string decodedData, ref byte[] data)
