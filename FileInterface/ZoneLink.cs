@@ -68,7 +68,7 @@ namespace Zone.FileInterface
 
                 //DLog.Log(test + "");
 
-                //using(StreamWriter sw = new StreamWriter(fs))
+                //using (StreamWriter sw = new StreamWriter(fs))
                 //{
                 //    ZoneMetadata zoneMetadata = new ZoneMetadata();
                 //    zoneMetadata.dummyFill();
@@ -78,16 +78,52 @@ namespace Zone.FileInterface
                 //    sw.WriteLine(Environment.NewLine + ZoneMetadataHelper.GetEmbedDataString(zoneMetadata));
                 //}
 
-                ReverseLineReader rr = new ReverseLineReader(fs, Encoding.UTF8);
-
-                IEnumerator<string> enumerator = rr.GetEnumerator();
-
-                while (enumerator.MoveNext())
+                for (int i = 0; i < fs.Length; i++)
                 {
-                    string item = enumerator.Current;
-
-                    DLog.Log(item);
+                    fs.Position = i;
+                    fs.WriteByte(0);
                 }
+                //DLog.Log(fs.Position + " pos before");
+
+                //ReverseLineReader rr = new ReverseLineReader(fs, Encoding.UTF8);
+
+                //IEnumerator<string> enumerator = rr.GetEnumerator();
+
+                //enumerator.MoveNext();
+
+                //string item = enumerator.Current;
+
+                //DLog.Log("RR : " + item);
+
+                //DLog.Log(fs.Position + " pos after");
+
+                //DLog.Log(fs.Length + "");
+
+                //fs.Seek(fs.Position, SeekOrigin.Begin);
+
+                //using (StreamReader sr = new StreamReader(fs))
+                //{
+                //    using (StreamWriter sw = new StreamWriter(fs))
+                //    {
+                //        DLog.Log(fs.Position + " pos before");
+
+                //        DLog.Log(sr.ReadLine());
+
+                //        DLog.Log(fs.Position + " pos after");
+
+                //        sw.WriteLine();
+                //    }
+                //}
+                //sw.WriteLine(Environment.NewLine + ZoneMetadataHelper.GetEmbedDataString(zoneMetadata));
+                //{
+                //    ZoneMetadata zoneMetadata = new ZoneMetadata();
+                //    zoneMetadata.dummyFill();
+
+                //    fs.Seek(0, SeekOrigin.End);
+
+                //    sw.WriteLine(Environment.NewLine + ZoneMetadataHelper.GetEmbedDataString(zoneMetadata));
+                //}
+
 
             }
         }

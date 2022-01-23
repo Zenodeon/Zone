@@ -27,7 +27,7 @@ namespace MiscUtil.IO
         /// <summary>
         /// Means of creating a Stream to read from.
         /// </summary>
-        private readonly FileStream streamSource;
+        private readonly FileStream baseStream;
 
         /// <summary>
         /// Encoding to use when converting bytes to text
@@ -93,7 +93,7 @@ namespace MiscUtil.IO
 
         internal ReverseLineReader(FileStream streamSource, Encoding encoding, int bufferSize)
         {
-            this.streamSource = streamSource;
+            this.baseStream = streamSource;
             this.encoding = encoding;
             this.bufferSize = bufferSize;
             if (encoding.IsSingleByte)
@@ -126,7 +126,7 @@ namespace MiscUtil.IO
         /// </summary>
         public IEnumerator<string> GetEnumerator()
         {
-            Stream stream = streamSource;
+            Stream stream = baseStream;
             if (!stream.CanSeek)
             {
                 stream.Dispose();
