@@ -8,26 +8,32 @@ namespace Zone
 {
     public class ZoneMetadata
     {
-        public string testString = string.Empty;
-        public int testInt;
+        public long sharedCount;
 
-        public List<string> testListString = new List<string>();
-        public List<int> testListInt = new List<int>();
+        public List<string> tags = new List<string>();
 
         public void dummyFill()
         {
-            testString = "test text";
-            testInt = 10312;
+            sharedCount = 432;
 
-            testListString.Add("test 1");
-            testListString.Add("test 2");
-            testListString.Add("test 3");
-            testListString.Add("test 4");
+            tags.Clear();
+            tags.Add("1234567890123456");
+            tags.Add("test 1");
+            tags.Add("test 2");
+            tags.Add("test 3");
+            tags.Add("test 4");
+        }
 
-            testListInt.Add(1);
-            testListInt.Add(2);
-            testListInt.Add(3);
-            testListInt.Add(4);
+        public void dummyFill2()
+        {
+            sharedCount = 26;
+
+            tags.Clear();
+            tags.Add("test 0");
+            tags.Add("test 5");
+            tags.Add("test 6");
+            tags.Add("test 7");
+            tags.Add("test 8");
         }
     }
 }

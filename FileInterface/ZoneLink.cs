@@ -7,11 +7,14 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using DebugLogger.Wpf;
 using MiscUtil.IO;
+using Quazistax;
 
 namespace Zone.FileInterface
 {
     public class ZoneLink
     {
+        private int defaultAllocationSize = 1024;
+
         string uriPath = @"D:\TestSite\TestSubjects\New folder (2)\";
         string media = "unknown-3.png";
         string media1 = "tenor.gif";
@@ -59,6 +62,15 @@ namespace Zone.FileInterface
 
         public void test(string filePath)
         {
+            //ZoneMetadata zoneMetadata = new ZoneMetadata();
+            //zoneMetadata.dummyFill();
+
+            //DLog.Log("Json : " + ZoneMetadataHelper.GetEmbedDataString(zoneMetadata).Length);
+
+            //byte[] embedData = ZoneMetadataHelper.GetEmbedData(zoneMetadata);
+            //DLog.Log("Byte[] : " + embedData.Length);
+
+
             using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite))
             {
                 //int test = -1;
@@ -78,22 +90,20 @@ namespace Zone.FileInterface
                 //    sw.WriteLine(Environment.NewLine + ZoneMetadataHelper.GetEmbedDataString(zoneMetadata));
                 //}
 
-                for (int i = 0; i < fs.Length; i++)
-                {
-                    fs.Position = i;
-                    fs.WriteByte(0);
-                }
                 //DLog.Log(fs.Position + " pos before");
 
-                //ReverseLineReader rr = new ReverseLineReader(fs, Encoding.UTF8);
+                ReverseLineReader rr = new ReverseLineReader(fs, Encoding.UTF8);
 
-                //IEnumerator<string> enumerator = rr.GetEnumerator();
+                IEnumerator<LineData> enumerator = rr.GetEnumerator();
 
-                //enumerator.MoveNext();
+                enumerator.MoveNext();
 
-                //string item = enumerator.Current;
+                LineData cl = enumerator.Current;
 
-                //DLog.Log("RR : " + item);
+                DLog.Log("Content : " + cl.content + " || " + "StartI : " + cl.startIndex + " || " + "EndI : " + cl.endIndex + " || " + "Length : " + cl.length);
+                DLog.Log("Extra : " + cl.byteLength);
+
+                QSFile.DeleteFilePart(fs, cl.startIndex, cl.byteLength);
 
                 //DLog.Log(fs.Position + " pos after");
 

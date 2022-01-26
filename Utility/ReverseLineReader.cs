@@ -16,7 +16,7 @@ namespace MiscUtil.IO
     /// Only single byte encodings, and UTF-8 and Unicode, are supported. The stream
     /// returned by the function must be seekable.
     /// </summary>
-    public sealed class ReverseLineReader : IEnumerable<string>
+    public sealed class ReverseLineReader : IEnumerable<LineData>
     {
         /// <summary>
         /// Buffer size to use by default. Classes with internal access can specify
@@ -124,7 +124,7 @@ namespace MiscUtil.IO
         /// Returns the enumerator reading strings backwards. If this method discovers that
         /// the returned stream is either unreadable or unseekable, a NotSupportedException is thrown.
         /// </summary>
-        public IEnumerator<string> GetEnumerator()
+        public IEnumerator<LineData> GetEnumerator()
         {
             Stream stream = baseStream;
             if (!stream.CanSeek)
@@ -140,7 +140,7 @@ namespace MiscUtil.IO
             return GetEnumeratorImpl(stream);
         }
 
-        private IEnumerator<string> GetEnumeratorImpl(Stream stream)
+        private IEnumerator<LineData> GetEnumeratorImpl(Stream stream)
         {
             try
             {
@@ -166,6 +166,8 @@ namespace MiscUtil.IO
                 // the carriage-return at the end of this buffer - hence this needs declaring
                 // way up here!
                 bool swallowCarriageReturn = false;
+
+                LineData lineData = new LineData();
 
                 while (position > 0)
                 {
@@ -203,10 +205,15 @@ namespace MiscUtil.IO
 
                     int charsRead = encoding.GetChars(buffer, firstCharPosition, bytesToRead - firstCharPosition, charBuffer, 0);
                     int endExclusive = charsRead;
-
+                    int byteCount = 0;
                     for (int i = charsRead - 1; i >= 0; i--)
                     {
                         char lookingAt = charBuffer[i];
+
+                        //DLog.Log(lookingAt + "");
+
+                        byteCount++;
+
                         if (swallowCarriageReturn)
                         {
                             swallowCarriageReturn = false;
@@ -216,35 +223,51 @@ namespace MiscUtil.IO
                                 continue;
                             }
                         }
+
                         // Anything non-line-breaking, just keep looking backwards
                         if (lookingAt != '\n' && lookingAt != '\r')
                         {
                             continue;
                         }
+
                         // End of CRLF? Swallow the preceding CR
                         if (lookingAt == '\n')
                         {
                             swallowCarriageReturn = true;
                         }
-                        int start = i + 1;
-                        string bufferContents = new string(charBuffer, start, endExclusive - start);
+
+                        int start = i;
+                        int length = endExclusive - start;
+
+                        lineData.startIndex = start;
+                        lineData.endIndex = endExclusive;
+                        lineData.length = length;
+                        lineData.byteLength = byteCount;
+
+                        string bufferContents = new string(charBuffer, start, length);
+
                         endExclusive = i;
+                        byteCount = 0;
+
                         string stringToYield = previousEnd == null ? bufferContents : bufferContents + previousEnd;
                         if (!firstYield || stringToYield.Length != 0)
                         {
-                            yield return stringToYield;
+                            lineData.content = stringToYield;
+                            yield return lineData;
                         }
                         firstYield = false;
                         previousEnd = null;
                     }
 
                     previousEnd = endExclusive == 0 ? null : (new string(charBuffer, 0, endExclusive) + previousEnd);
+                    lineData.startIndex = 0;
+                    lineData.endIndex = endExclusive;
+                    lineData.length = endExclusive;
+                    lineData.byteLength = endExclusive;
 
                     // If we didn't decode the start of the array, put it at the end for next time
                     if (leftOverData != 0)
-                    {
                         Buffer.BlockCopy(buffer, 0, buffer, bufferSize, leftOverData);
-                    }
                 }
                 if (leftOverData != 0)
                 {
@@ -255,7 +278,9 @@ namespace MiscUtil.IO
                 {
                     yield break;
                 }
-                yield return previousEnd ?? "";
+
+                lineData.content = previousEnd ?? "";
+                yield return lineData;
             }
             finally
             {
@@ -268,26 +293,39 @@ namespace MiscUtil.IO
             return GetEnumerator();
         }
     }
-}
 
 
-// StreamUtil.cs:
-public static class StreamUtil
-{
-    public static void ReadExactly(Stream input, byte[] buffer, int bytesToRead)
+    public class LineData
     {
-        int index = 0;
-        while (index < bytesToRead)
+        public string content = string.Empty;
+
+        public long startIndex = -1;
+        public long endIndex = -1;
+
+        public long length = -1;
+
+        public long byteLength = 0;
+    }
+
+
+    // StreamUtil.cs:
+    public static class StreamUtil
+    {
+        public static void ReadExactly(Stream input, byte[] buffer, int bytesToRead)
         {
-            int read = input.Read(buffer, index, bytesToRead - index);
-            if (read == 0)
+            int index = 0;
+            while (index < bytesToRead)
             {
-                throw new EndOfStreamException
-                    (String.Format("End of stream reached with {0} byte{1} left to read.",
-                                   bytesToRead - index,
-                                   bytesToRead - index == 1 ? "s" : ""));
+                int read = input.Read(buffer, index, bytesToRead - index);
+                if (read == 0)
+                {
+                    throw new EndOfStreamException
+                        (String.Format("End of stream reached with {0} byte{1} left to read.",
+                                       bytesToRead - index,
+                                       bytesToRead - index == 1 ? "s" : ""));
+                }
+                index += read;
             }
-            index += read;
         }
     }
 }
