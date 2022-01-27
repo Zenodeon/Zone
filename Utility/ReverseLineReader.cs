@@ -205,14 +205,10 @@ namespace MiscUtil.IO
 
                     int charsRead = encoding.GetChars(buffer, firstCharPosition, bytesToRead - firstCharPosition, charBuffer, 0);
                     int endExclusive = charsRead;
-                    int byteCount = 0;
+
                     for (int i = charsRead - 1; i >= 0; i--)
                     {
                         char lookingAt = charBuffer[i];
-
-                        //DLog.Log(lookingAt + "");
-
-                        byteCount++;
 
                         if (swallowCarriageReturn)
                         {
@@ -226,29 +222,22 @@ namespace MiscUtil.IO
 
                         // Anything non-line-breaking, just keep looking backwards
                         if (lookingAt != '\n' && lookingAt != '\r')
-                        {
                             continue;
-                        }
 
                         // End of CRLF? Swallow the preceding CR
                         if (lookingAt == '\n')
-                        {
                             swallowCarriageReturn = true;
-                        }
-
+                        
                         int start = i;
                         int length = endExclusive - start;
 
+                        //DLog.Log(endExclusive + " || " + start);
+
                         lineData.startIndex = start;
-                        lineData.endIndex = endExclusive;
                         lineData.length = length;
-                        lineData.byteLength = byteCount;
 
                         string bufferContents = new string(charBuffer, start, length);
-
                         endExclusive = i;
-                        byteCount = 0;
-
                         string stringToYield = previousEnd == null ? bufferContents : bufferContents + previousEnd;
                         if (!firstYield || stringToYield.Length != 0)
                         {
@@ -261,9 +250,7 @@ namespace MiscUtil.IO
 
                     previousEnd = endExclusive == 0 ? null : (new string(charBuffer, 0, endExclusive) + previousEnd);
                     lineData.startIndex = 0;
-                    lineData.endIndex = endExclusive;
                     lineData.length = endExclusive;
-                    lineData.byteLength = endExclusive;
 
                     // If we didn't decode the start of the array, put it at the end for next time
                     if (leftOverData != 0)
@@ -276,7 +263,7 @@ namespace MiscUtil.IO
                 }
                 if (firstYield && string.IsNullOrEmpty(previousEnd))
                 {
-                    yield break;
+                    yield return lineData;
                 }
 
                 lineData.content = previousEnd ?? "";
@@ -300,11 +287,7 @@ namespace MiscUtil.IO
         public string content = string.Empty;
 
         public long startIndex = -1;
-        public long endIndex = -1;
-
         public long length = -1;
-
-        public long byteLength = 0;
     }
 
 

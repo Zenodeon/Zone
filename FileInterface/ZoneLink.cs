@@ -100,10 +100,10 @@ namespace Zone.FileInterface
 
                 LineData cl = enumerator.Current;
 
-                DLog.Log("Content : " + cl.content + " || " + "StartI : " + cl.startIndex + " || " + "EndI : " + cl.endIndex + " || " + "Length : " + cl.length);
-                DLog.Log("Extra : " + cl.byteLength);
+                DLog.Log("Content : " + cl.content + " || " + "StartI : " + cl.startIndex + " || " + " || " + "Length : " + cl.length);
 
-                QSFile.DeleteFilePart(fs, cl.startIndex, cl.byteLength);
+                //if (cl.startIndex != -1)
+                //    QSFile.DeleteFilePart(fs, cl.startIndex, cl.length);
 
                 //DLog.Log(fs.Position + " pos after");
 
