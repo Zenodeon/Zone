@@ -73,6 +73,8 @@ namespace Zone.FileInterface
 
             using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite))
             {
+                ZoneMetadataReader reader = new ZoneMetadataReader(fs);
+                reader.FindMetadata();
                 //int test = -1;
 
                 //fs.Seek(-2, SeekOrigin.End);
@@ -92,15 +94,15 @@ namespace Zone.FileInterface
 
                 //DLog.Log(fs.Position + " pos before");
 
-                ReverseLineReader rr = new ReverseLineReader(fs, Encoding.UTF8);
+                //ReverseLineReader rr = new ReverseLineReader(fs, Encoding.UTF8);
 
-                IEnumerator<LineData> enumerator = rr.GetEnumerator();
+                //IEnumerator<LineData> enumerator = rr.GetEnumerator();
 
-                enumerator.MoveNext();
+                //enumerator.MoveNext();
 
-                LineData cl = enumerator.Current;
+                //LineData cl = enumerator.Current;
 
-                DLog.Log("Content : " + cl.content + " || " + "StartI : " + cl.startIndex + " || " + " || " + "Length : " + cl.length);
+                //DLog.Log("Content : " + cl.content + " || " + "StartI : " + cl.startIndex + " || " + " || " + "Length : " + cl.length);
 
                 //if (cl.startIndex != -1)
                 //    QSFile.DeleteFilePart(fs, cl.startIndex, cl.length);
