@@ -9,7 +9,7 @@ namespace Zone.FileInterface.Helper
 {
     public static class ZoneMetadataHelper
     {
-        public const string header = "[ZMD_";
+        public const string header = "[ZMD|";
         public const string footer = "|ZMD]";
 
         public static byte[] GetEmbedData(ZoneMetadata metadata)

@@ -18,13 +18,15 @@ namespace Zone.FileInterface.Helper
 
         Encoding encoding = Encoding.UTF8;
 
+        public ZoneMetadata metadata;
+
         public ZoneMetadataReader(FileStream fileStream)
         {
             baseStream = fileStream;
         }
 
         /// <summary>
-        /// 
+        /// If Metadata Header is found, index is saved in metadataIndex.
         /// </summary>
         /// <returns>Returns true if Metadata Header is found</returns>
         public bool LocateMetadata()
@@ -76,16 +78,36 @@ namespace Zone.FileInterface.Helper
             else
             {
                 metadataIndex = patternIndex;
-                //char[] charArray = encoding.GetChars(buffer, 0, buffer.Length);
-                DLog.Log("Final Index : " + metadataIndex);
                 return true;
             }
-
         }
 
-        public void TryExtractingData()
+        public bool TryExtractingData()
         {
+            long streamLength = baseStream.Length;
 
+            long pos = metadataIndex;
+            baseStream.Position = pos;
+
+            int bufferSize = DefaultBufferSize;
+            if ((pos + bufferSize) > streamLength)
+                bufferSize = (int)(streamLength - pos);
+
+            byte[] buffer = new byte[bufferSize];
+
+            baseStream.Read(buffer, 0, bufferSize);
+
+            string rawData = encoding.GetString(buffer);
+            int footerIndex = rawData.IndexOf(ZoneMetadataHelper.footer);
+
+            if (footerIndex == -1)
+                return false;
+
+            string data = rawData.Substring(0, footerIndex);
+            data = data.Remove(0, ZoneMetadataHelper.header.Length);
+            DLog.Log("Text : " + data);
+
+            return true;
         }
     }
 }

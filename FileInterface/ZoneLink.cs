@@ -75,7 +75,12 @@ namespace Zone.FileInterface
             using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite))
             {
                 ZoneMetadataReader reader = new ZoneMetadataReader(fs);
-                DLog.Log("Located : " +  reader.LocateMetadata());
+
+                if(reader.LocateMetadata())
+                {
+                    DLog.Log("Located Header");
+                    reader.TryExtractingData();
+                }
                 //int test = -1;
 
                 //fs.Seek(-2, SeekOrigin.End);
