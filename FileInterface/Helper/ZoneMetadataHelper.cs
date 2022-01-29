@@ -5,13 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace Zone.FileInterface
+namespace Zone.FileInterface.Helper
 {
     public static class ZoneMetadataHelper
     {
-        private const string header = "[_ZMD-=<[";
-
-        private const string footer = "]>=-ZMD_]";
+        public const string header = "[ZMD_";
+        public const string footer = "|ZMD]";
 
         public static byte[] GetEmbedData(ZoneMetadata metadata)
         {
@@ -47,7 +46,8 @@ namespace Zone.FileInterface
 
             byte[] bytesToRemove = Encoding.UTF8.GetBytes(decodedData);
 
-            int patternIndex = data.LastIndexOfPattern(bytesToRemove);
+            //int patternIndex = data.LastIndexOfPattern(bytesToRemove);
+            int patternIndex = -1;
 
             DLog.Log("Data Length Before : " + data.Length);
 

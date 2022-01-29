@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using DebugLogger.Wpf;
 using MiscUtil.IO;
 using Quazistax;
+using Zone.FileInterface.Helper;
 
 namespace Zone.FileInterface
 {
@@ -74,7 +75,7 @@ namespace Zone.FileInterface
             using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite))
             {
                 ZoneMetadataReader reader = new ZoneMetadataReader(fs);
-                reader.FindMetadata();
+                DLog.Log("Located : " +  reader.LocateMetadata());
                 //int test = -1;
 
                 //fs.Seek(-2, SeekOrigin.End);
