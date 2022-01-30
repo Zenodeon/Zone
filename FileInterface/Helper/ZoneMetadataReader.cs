@@ -32,7 +32,7 @@ namespace Zone.FileInterface.Helper
         public bool LocateMetadata()
         {
             long streamLength = baseStream.Length;
-            int bufferSize = testBufferSize;
+            int bufferSize = DefaultBufferSize;
 
             long pos = streamLength;
 
@@ -56,7 +56,7 @@ namespace Zone.FileInterface.Helper
             {
                 baseStream.Read(buffer, 0, bufferSize);
 
-                patternIndex = buffer.IndexOfPattern(headerBytes);
+                patternIndex = buffer.LastIndexOfPattern(headerBytes);
                 
                 if (patternIndex != -1)
                 {
