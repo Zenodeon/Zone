@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Zone
 {
-    public static class UUtility
+    internal static class UUtility
     {
         public static string ToBase64String(string text)
         {

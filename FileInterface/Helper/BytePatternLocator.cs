@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Zone.FileInterface.Helper
 {
-    public static class BytePatternLocator
+    internal static class BytePatternLocator
     {
         public static int IndexOfPattern(this byte[] body, byte[] pattern)
         {

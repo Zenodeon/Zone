@@ -5,7 +5,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.IO;
 
-public class ThumbnailExtactorManager
+internal class ThumbnailExtactorManager
 {
     public static ThumbnailExtactorManager _instance;
 

@@ -7,7 +7,7 @@ using System.IO;
 
 namespace Quazistax
 {
-	public static class QSFile
+	internal static class QSFile
 	{
 		[ThreadStatic]
 		private static byte[] fileBuf = new byte[128 * 1024];
@@ -110,6 +110,26 @@ namespace Quazistax
 			f.Position = startPos;
 			for (long i = 0; i < length; ++i)
 				f.WriteByte(fillByte);
+		}
+
+		public static void ReplaceFilePart(FileStream fs, long startPos, long length, byte[] bytes)
+        {
+			if (startPos + length > fs.Length)
+				throw new ArgumentOutOfRangeException("startPos + length", "Replace range is out of file.");
+
+			int replaceLength = bytes.Length;
+
+			DLog.Log("startPos : " + startPos + " || " + "length : " + length + " || " + "replaceLength : " + replaceLength + " || ");
+
+			if (length > replaceLength)
+				DeleteFilePart(fs, startPos + replaceLength, length - replaceLength);
+
+			if (length < replaceLength)
+				InsertFilePart(fs, startPos, replaceLength - length);
+
+			fs.Position = startPos;
+			for (long i = 0; i < replaceLength; i++)
+				fs.WriteByte(bytes[i]);
 		}
 	}
 }

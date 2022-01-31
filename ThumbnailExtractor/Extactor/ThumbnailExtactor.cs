@@ -7,7 +7,7 @@ using System.Windows.Media.Imaging;
 using DebugLogger.Wpf;
 using System.IO;
 
-public class ThumbnailExtactor 
+internal class ThumbnailExtactor 
 {
     private int width = 256;
     private int height = 256;

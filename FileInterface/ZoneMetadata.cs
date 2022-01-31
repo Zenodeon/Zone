@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Zone
 {
-    public class ZoneMetadata
+    internal class ZoneMetadata
     {
         public long sharedCount;
 
