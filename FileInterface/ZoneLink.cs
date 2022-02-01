@@ -68,10 +68,19 @@ namespace Zone.FileInterface
                 //        DLog.Log("Extraction Failed");
                 //}
 
-                ZoneMetadata zoneMetadata = new ZoneMetadata();
-                zoneMetadata.dummyFill();
+                ZoneMetadata metadata = new ZoneMetadata();
+                metadata.dummyFill();
 
-                ZoneMetadataWriter.EmbedMetadata(fs, zoneMetadata);
+                //ZoneMetadataWriter.EmbedMetadata(fs, metadata);
+
+                string json = JsonConvert.SerializeObject(metadata);
+
+                using (StreamWriter sw = new StreamWriter(fs))
+                {
+                    string embedData = ZoneMetadataHelper.GetEmbedDataString(metadata);
+                    fs.Seek(0, SeekOrigin.End);
+                    sw.WriteLine(embedData);
+                }
             }
         }
     }

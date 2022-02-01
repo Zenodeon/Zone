@@ -24,5 +24,24 @@ namespace Zone
         {
            return byteArray1.Concat(byteArray2).ToArray();
         }
+
+        public static string CreateMD5(string input)
+        {
+            // https://stackoverflow.com/a/24031467/16627173
+            // Use input string to calculate MD5 hash
+            using (System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create())
+            {
+                byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
+                byte[] hashBytes = md5.ComputeHash(inputBytes);
+
+                // Convert the byte array to hexadecimal string
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < hashBytes.Length; i++)
+                {
+                    sb.Append(hashBytes[i].ToString("X2"));
+                }
+                return sb.ToString();
+            }
+        }
     }
 }

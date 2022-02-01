@@ -8,12 +8,14 @@ namespace Zone
 {
     internal class ZoneMetadata
     {
+        public string uniqueID = string.Empty;
         public long sharedCount;
 
         public List<string> tags = new List<string>();
 
         public void dummyFill()
         {
+            uniqueID = "asdubasd89asd9ah7b7893";
             sharedCount = 432;
 
             tags.Clear();
@@ -26,6 +28,7 @@ namespace Zone
 
         public void dummyFill2()
         {
+            uniqueID = "sjdbf674gt9eubgf8734hs45";
             sharedCount = 26;
 
             tags.Clear();

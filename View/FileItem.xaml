@@ -8,6 +8,12 @@
              Background="Transparent"
              Height="112" Width="112" Padding="0.5" >
     <Grid>
-        <Image Name="filePreview" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+        <Image Name="filePreview" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+
+        <Border>
+            <Viewbox Height="18" VerticalAlignment="Bottom" Margin="0 0 0 5">
+                <TextBlock x:Name="textBlock" Text="File Name" Foreground="White" TextAlignment="Center" TextWrapping="Wrap" FontFamily="Calibri Light"/>
+            </Viewbox>
+        </Border>
     </Grid>
 </UserControl>

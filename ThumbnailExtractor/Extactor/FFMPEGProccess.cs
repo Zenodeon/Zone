@@ -6,7 +6,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using DebugLogger.Wpf;
 
-internal static class FFMPEGProccess
+public static class FFMPEGProccess
 {
     public static string ffmpegPath = @"C:\Users\Admin\Desktop\ffmpeg\bin\ffmpeg.exe";
     public static string ffprobePath = @"C:\Users\Admin\Desktop\ffmpeg\bin\ffprobe.exe";
@@ -36,7 +36,7 @@ internal static class FFMPEGProccess
         return ffmpegMemory;
     }
 
-    public static MemoryStream GetPNG(string path, int duration, int fps, int width, int height)
+    public static MemoryStream GetPNG(string path, int width, int height)
     {
         DLog.Log("Starting");
         ProcessStartInfo ffmpegProcessInfo = new ProcessStartInfo()
