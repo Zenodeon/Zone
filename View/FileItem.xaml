@@ -10,10 +10,17 @@
     <Grid>
         <Image Name="filePreview" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
 
-        <Border>
-            <Viewbox Height="18" VerticalAlignment="Bottom" Margin="0 0 0 5">
-                <TextBlock x:Name="textBlock" Text="File Name" Foreground="White" TextAlignment="Center" TextWrapping="Wrap" FontFamily="Calibri Light"/>
-            </Viewbox>
+        <Border VerticalAlignment="Bottom" Height="30">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0.5,1" EndPoint="0.5,0">
+                    <GradientStop Color="#7F000000" Offset="0" />
+                    <GradientStop Color="#00000000" Offset="1" />
+                </LinearGradientBrush>
+            </Border.Background>
         </Border>
+
+        <Viewbox x:Name="viewbox" Height="18" VerticalAlignment="Bottom" Margin="0 0 0 2.5">
+            <TextBlock x:Name="textBlock" Text="File Name" Foreground="White" TextAlignment="Center" TextWrapping="Wrap" FontFamily="Calibri Light"/>
+        </Viewbox>
     </Grid>
 </UserControl>

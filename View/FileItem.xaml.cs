@@ -27,6 +27,8 @@ namespace Zone.View
         public ContentPresenter frame { get; set; }
         public int id { get; set; }
 
+        private bool previewSet = false;
+
         public FileItem(int id)
         {
             InitializeComponent();
@@ -45,12 +47,14 @@ namespace Zone.View
 
         private void SetThumbnail(MemoryStream thumbnailStream)
         {
-            Dispatcher.BeginInvoke(() => AnimationBehavior.SetSourceStream(filePreview, thumbnailStream), DispatcherPriority.Normal);
+            if (!previewSet)
+                Dispatcher.BeginInvoke(() => AnimationBehavior.SetSourceStream(filePreview, thumbnailStream), DispatcherPriority.Normal);
         }
 
         private void SetThumbnailPreview(MemoryStream thumbnailStream)
         {
             Dispatcher.BeginInvoke(() => AnimationBehavior.SetSourceStream(filePreview, thumbnailStream), DispatcherPriority.Normal);
+            previewSet = true;
         }
     }
 }

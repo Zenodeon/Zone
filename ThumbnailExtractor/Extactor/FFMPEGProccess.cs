@@ -1,15 +1,9 @@
 using System.IO;
 using System.Diagnostics;
-using System.Collections;
-using System.Collections.Generic;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using DebugLogger.Wpf;
 
 public static class FFMPEGProccess
 {
     public static string ffmpegPath = @"C:\Users\Admin\Desktop\ffmpeg\bin\ffmpeg.exe";
-    public static string ffprobePath = @"C:\Users\Admin\Desktop\ffmpeg\bin\ffprobe.exe";
 
     public static MemoryStream GetGIF(string path, int duration, int fps, int width, int height)
     {
@@ -30,15 +24,11 @@ public static class FFMPEGProccess
         MemoryStream ffmpegMemory = new MemoryStream();
 
         ffmpegOutput.CopyTo(ffmpegMemory);
-
-        DLog.Log("ffmpeg GIF done");
-
         return ffmpegMemory;
     }
 
     public static MemoryStream GetPNG(string path, int width, int height)
     {
-        DLog.Log("Starting");
         ProcessStartInfo ffmpegProcessInfo = new ProcessStartInfo()
         {
             FileName = ffmpegPath,
@@ -56,9 +46,6 @@ public static class FFMPEGProccess
         MemoryStream ffmpegMemory = new MemoryStream();
 
         ffmpegOutput.CopyTo(ffmpegMemory);
-
-        DLog.Log("ffmpeg done");
-
         return ffmpegMemory;
     }
 }

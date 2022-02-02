@@ -11,18 +11,18 @@ public class ThumbnailExtactor
 {
     private int width = 256;
     private int height = 256;
-    private int duration = 3;
+    private int duration = 4;
     private int fps = 30;
 
-    public async void GetFrame(string path, Action<MemoryStream> callback)
+    public void GetFrame(string path, Action<MemoryStream> callback)
     {
-        await Task.Run(() =>
+        Task.Run(() =>
             callback.Invoke(FFMPEGProccess.GetPNG(path, width, height)));
     }
 
-    public async void GetFrames(string path, Action<MemoryStream> callback)
+    public void GetFrames(string path, Action<MemoryStream> callback)
     {
-        await Task.Run(() =>
+        Task.Run(() =>
             callback.Invoke(FFMPEGProccess.GetGIF(path, duration, fps, width, height)));
     }
 }

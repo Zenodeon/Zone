@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.IO;
+using Zone.CustomClass;
 
 public class ThumbnailExtactorManager
 {
@@ -17,8 +18,8 @@ public class ThumbnailExtactorManager
     Queue<int> availableSFExtractor = new Queue<int>();
     Queue<int> availableMFExtractor = new Queue<int>();
 
-    Queue<FrameRequest> singleFrameRequests = new Queue<FrameRequest>();
-    Queue<FrameRequest> multiFrameRequests = new Queue<FrameRequest>();
+    ThreadQueue<FrameRequest> singleFrameRequests = new ThreadQueue<FrameRequest>();
+    ThreadQueue<FrameRequest> multiFrameRequests = new ThreadQueue<FrameRequest>();
 
     public void Instantiate()
     {
@@ -34,13 +35,13 @@ public class ThumbnailExtactorManager
 
     public void GetThumbnail(string url, Action<MemoryStream> singleFrameCallback)
     {
-        FrameRequest singleFrameRequest = new FrameRequest(url, RequestType.Single, singleFrameCallback, DequeueExtractor);
+        FrameRequest singleFrameRequest = new FrameRequest(url, RequestType.Single, singleFrameCallback, ProccessNextSFRequest);
         ProcessRequest(singleFrameRequest);
     }
 
     public void GetThumbnailPreview(string url, Action<MemoryStream> multiFrameCallBack)
     {
-        FrameRequest multiFrameRequest = new FrameRequest(url, RequestType.Preview, multiFrameCallBack, DequeueExtractor);
+        FrameRequest multiFrameRequest = new FrameRequest(url, RequestType.Preview, multiFrameCallBack, ProccessNextMFRequest);
         ProcessRequest(multiFrameRequest);
     }
 
@@ -54,20 +55,24 @@ public class ThumbnailExtactorManager
     {
         if (withID == -1)
         {
-            int extractorID = GetAvailableExtractor(request.requestType);
+            withID = GetAvailableExtractor(request.requestType);
 
-            if (extractorID == -1)
+            if (withID == -1)
             {
-                if (request.requestType == RequestType.Single)
-                    singleFrameRequests.Enqueue(request);
-                else
-                    multiFrameRequests.Enqueue(request);
+                switch (request.requestType)
+                {
+                    case RequestType.Single:
+                        singleFrameRequests.Enqueue(request);
+                        break;
+
+                    case RequestType.Preview:
+                        multiFrameRequests.Enqueue(request);
+                        break;
+                }
             }
-            else
-                SendFrame(request, extractorID);
         }
-        else
-            SendFrame(request, withID);
+
+        SendFrame(request, withID);
     }
 
     private void SendFrame(FrameRequest request, int extractorID)
@@ -96,42 +101,39 @@ public class ThumbnailExtactorManager
         return extractorID;
     }
 
-    private void DequeueExtractor(int id, RequestType requestType)
+    private void ProccessNextSFRequest(int id)
     {
-        if (requestType == RequestType.Single)
-        {
-            if (singleFrameRequests.Count == 0)
-                availableSFExtractor.Enqueue(id);
-            else
-                ProcessRequest(singleFrameRequests.Dequeue(), withID: id);
-        }
+        if (singleFrameRequests.Count != 0)
+            ProcessRequest(singleFrameRequests.Dequeue(), withID: id);
+        else
+            availableSFExtractor.Enqueue(id);
+    }
 
-        if (requestType == RequestType.Preview)
-        {
-            if (multiFrameRequests.Count == 0)
-                availableMFExtractor.Enqueue(id);
-            else
-                ProcessRequest(multiFrameRequests.Dequeue(), withID: id);
-        }
+    private void ProccessNextMFRequest(int id)
+    {
+        if (multiFrameRequests.Count != 0)
+            ProcessRequest(multiFrameRequests.Dequeue(), withID: id);
+        else
+            availableMFExtractor.Enqueue(id);
     }
 
     public class FrameRequest
     {
-        public int id = -1;
-        public RequestType requestType;
+        public int id { get; set; } = -1;
+        public RequestType requestType { get; set; }
 
-        public string url;
+        public string url { get; private set; }
 
-        public Action<MemoryStream> callback;
+        public Action<MemoryStream> callback { get; private set; }
 
-        public FrameRequest(string url, RequestType requestType, Action<MemoryStream> callback, Action<int, RequestType> onComplete)
+        public FrameRequest(string url, RequestType requestType, Action<MemoryStream> callback, Action<int> onComplete)
         {
             this.url = url;
             this.requestType = requestType;
             this.callback = (MemoryStream thumbnailStream) =>
             {
                 callback.Invoke(thumbnailStream);
-                onComplete.Invoke(id, requestType);
+                onComplete.Invoke(id);
             };
         }
     }
