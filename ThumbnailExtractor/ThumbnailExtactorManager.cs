@@ -103,16 +103,16 @@ public class ThumbnailExtactorManager
 
     private void ProccessNextSFRequest(int id)
     {
-        if (singleFrameRequests.Count != 0)
-            ProcessRequest(singleFrameRequests.Dequeue(), withID: id);
+        if (singleFrameRequests.TryDequeue(out FrameRequest request))
+            ProcessRequest(request, withID: id);
         else
             availableSFExtractor.Enqueue(id);
     }
 
     private void ProccessNextMFRequest(int id)
     {
-        if (multiFrameRequests.Count != 0)
-            ProcessRequest(multiFrameRequests.Dequeue(), withID: id);
+        if (multiFrameRequests.TryDequeue(out FrameRequest request))
+            ProcessRequest(request, withID: id);
         else
             availableMFExtractor.Enqueue(id);
     }

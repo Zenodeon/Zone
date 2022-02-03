@@ -10,25 +10,27 @@ namespace Zone.CustomClass
     {
         private readonly Queue<T> queue = new Queue<T>();
 
-        public int Count
-        {
-            get
-            {
-                lock (queue)
-                    return queue.Count;
-            }
-        }
-
         public void Enqueue(T item)
         {
             lock (queue)
                 queue.Enqueue(item);
         }
 
-        public T Dequeue()
+        public bool TryDequeue(out T t)
         {
             lock (queue)
-                return queue.Dequeue();
+            {
+                if (queue.Count != 0)
+                {
+                    t = queue.Dequeue();
+                    return true;
+                }
+                else
+                {
+                    t = default(T);
+                    return false;
+                }
+            }
         }
     }
 }

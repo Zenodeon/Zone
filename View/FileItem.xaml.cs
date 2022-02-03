@@ -29,6 +29,8 @@ namespace Zone.View
 
         private bool previewSet = false;
 
+        private CFileInfo fileInfo;
+
         public FileItem(int id)
         {
             InitializeComponent();
@@ -41,8 +43,11 @@ namespace Zone.View
 
         public void Configure(CFileInfo cFileInfo)
         {
-            ThumbnailExtactorManager._instance.GetThumbnail(cFileInfo.filePath, SetThumbnail);
-            ThumbnailExtactorManager._instance.GetThumbnailPreview(cFileInfo.filePath, SetThumbnailPreview);
+            fileInfo = cFileInfo;
+            fileNameBlock.Text = fileInfo.fileName;
+
+            ThumbnailExtactorManager._instance.GetThumbnail(fileInfo.filePath, SetThumbnail);
+            //ThumbnailExtactorManager._instance.GetThumbnailPreview(fileInfo.filePath, SetThumbnailPreview);
         }
 
         private void SetThumbnail(MemoryStream thumbnailStream)
