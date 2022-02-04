@@ -25,7 +25,7 @@ namespace Zone
            return byteArray1.Concat(byteArray2).ToArray();
         }
 
-        public static string CreateMD5(string input)
+        public static string GetMD5(string input)
         {
             // https://stackoverflow.com/a/24031467/16627173
             // Use input string to calculate MD5 hash
@@ -37,9 +37,8 @@ namespace Zone
                 // Convert the byte array to hexadecimal string
                 StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < hashBytes.Length; i++)
-                {
                     sb.Append(hashBytes[i].ToString("X2"));
-                }
+
                 return sb.ToString();
             }
         }

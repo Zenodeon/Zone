@@ -33,6 +33,12 @@ public class ThumbnailExtactorManager
             availableMFExtractor.Enqueue(i);
     }
 
+    public void GetThumbnail(string url, Action<BitmapImage> singleFrameCallback)
+    {
+        FrameRequest singleFrameRequest = new FrameRequest(url, RequestType.Single, singleFrameCallback, ProccessNextSFRequest);
+        ProcessRequest(singleFrameRequest);
+    }
+
     public void GetThumbnail(string url, Action<MemoryStream> singleFrameCallback)
     {
         FrameRequest singleFrameRequest = new FrameRequest(url, RequestType.Single, singleFrameCallback, ProccessNextSFRequest);
@@ -80,10 +86,14 @@ public class ThumbnailExtactorManager
         request.id = extractorID;
 
         if (request.requestType == RequestType.Single)
-            extactor.GetFrame(request.url, request.callback);
-
+        {
+            if (request.outputType == OutputType.MemoryStream)
+                extactor.GetFrame(request.url, request.streamCallback);
+            else
+                extactor.GetFrame(request.url, request.imageCallback);
+        }
         if (request.requestType == RequestType.Preview)
-            extactor.GetFrames(request.url, request.callback);
+            extactor.GetFrames(request.url, request.streamCallback);
     }
 
     private int GetAvailableExtractor(RequestType type)
@@ -121,18 +131,36 @@ public class ThumbnailExtactorManager
     {
         public int id { get; set; } = -1;
         public RequestType requestType { get; set; }
+        public OutputType outputType { get; set; }
 
         public string url { get; private set; }
 
-        public Action<MemoryStream> callback { get; private set; }
+        public Action<MemoryStream> streamCallback { get; private set; }
+        public Action<BitmapImage> imageCallback { get; private set; }
+
 
         public FrameRequest(string url, RequestType requestType, Action<MemoryStream> callback, Action<int> onComplete)
         {
+            outputType = OutputType.MemoryStream;
+
             this.url = url;
             this.requestType = requestType;
-            this.callback = (MemoryStream thumbnailStream) =>
+            streamCallback = (MemoryStream thumbnailStream) =>
             {
                 callback.Invoke(thumbnailStream);
+                onComplete.Invoke(id);
+            };
+        }
+
+        public FrameRequest(string url, RequestType requestType, Action<BitmapImage> callback, Action<int> onComplete)
+        {
+            outputType = OutputType.BitmapImage;
+
+            this.url = url;
+            this.requestType = requestType;
+            imageCallback = (BitmapImage thumbnail) =>
+            {
+                callback.Invoke(thumbnail);
                 onComplete.Invoke(id);
             };
         }
@@ -142,5 +170,11 @@ public class ThumbnailExtactorManager
     {
         Single,
         Preview
+    }
+
+    public enum OutputType
+    {
+        BitmapImage,
+        MemoryStream
     }
 }

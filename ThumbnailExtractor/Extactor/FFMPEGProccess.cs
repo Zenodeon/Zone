@@ -1,5 +1,6 @@
 using System.IO;
 using System.Diagnostics;
+using System.Windows.Media.Imaging;
 
 public static class FFMPEGProccess
 {
@@ -27,7 +28,7 @@ public static class FFMPEGProccess
         return ffmpegMemory;
     }
 
-    public static MemoryStream GetPNG(string path, int width, int height)
+    public static MemoryStream GetPNGStream(string path, int width, int height)
     {
         ProcessStartInfo ffmpegProcessInfo = new ProcessStartInfo()
         {
@@ -47,5 +48,36 @@ public static class FFMPEGProccess
 
         ffmpegOutput.CopyTo(ffmpegMemory);
         return ffmpegMemory;
+    }
+
+    public static BitmapImage GetPNG(string path, int width, int height)
+    {
+        ProcessStartInfo ffmpegProcessInfo = new ProcessStartInfo()
+        {
+            FileName = ffmpegPath,
+            Arguments = $"-i \"{path}\" -vf \"scale='if(gt(iw,ih), -1, {width})':'if(gt(ih,iw), -1, {height})',crop={width}:{height}\" -vframes 1 pipe:.png",
+            RedirectStandardOutput = true,
+            UseShellExecute = false,
+            CreateNoWindow = true,
+        };
+
+        Process ffmpegProcess = new Process();
+        ffmpegProcess.StartInfo = ffmpegProcessInfo;
+        ffmpegProcess.Start();
+
+        BitmapImage image = new BitmapImage();
+
+        using Stream ffmpegOutput = ffmpegProcess.StandardOutput.BaseStream;
+        MemoryStream ffmpegMemory = new MemoryStream();
+
+        ffmpegOutput.CopyTo(ffmpegMemory);
+
+        image.BeginInit();
+        image.CacheOption = BitmapCacheOption.OnLoad;
+        image.StreamSource = ffmpegMemory;
+        image.EndInit();
+        image.Freeze();
+        
+        return image;
     }
 }

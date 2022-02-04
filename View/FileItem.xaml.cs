@@ -16,6 +16,8 @@ using System.Windows.Shapes;
 using DebugLogger.Wpf;
 using XamlAnimatedGif;
 using System.IO;
+using Zone.FileInterface;
+using Zone.FileInterface.Helper;
 
 namespace Zone.View
 {
@@ -46,11 +48,29 @@ namespace Zone.View
             fileInfo = cFileInfo;
             fileNameBlock.Text = fileInfo.fileName;
 
+            ZoneMetadataReader reader = new ZoneMetadataReader();
+            if (reader.LocateMetadata(fileInfo.filePath))
+            {
+                if (reader.TryExtractMetadata(out ZoneMetadata metadata))
+                {
+
+                }
+            }
+            else
+            {
+
+            }
+
             ThumbnailExtactorManager._instance.GetThumbnail(fileInfo.filePath, SetThumbnail);
             //ThumbnailExtactorManager._instance.GetThumbnailPreview(fileInfo.filePath, SetThumbnailPreview);
         }
 
-        private void SetThumbnail(MemoryStream thumbnailStream)
+        private void SetThumbnail(BitmapImage thumbnail)
+        {
+            Dispatcher.BeginInvoke(() => filePreview.Source = thumbnail, DispatcherPriority.Normal);
+        }
+
+        private void SetThumbnailFromStream(MemoryStream thumbnailStream)
         {
             if (!previewSet)
                 Dispatcher.BeginInvoke(() => AnimationBehavior.SetSourceStream(filePreview, thumbnailStream), DispatcherPriority.Normal);

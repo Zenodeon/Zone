@@ -23,7 +23,15 @@ namespace Zone.FileInterface.Helper
 
         private string rawData = string.Empty;
 
-        public ZoneMetadata metadata;
+        /// <summary>
+        /// If Metadata Header is found, index is saved in metadataIndex.
+        /// </summary>
+        /// <returns>Returns true if Metadata Header is found</returns>
+        public bool LocateMetadata(string path)
+        {
+            using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.ReadWrite))
+                return LocateMetadata(fs);
+        }
 
         /// <summary>
         /// If Metadata Header is found, index is saved in metadataIndex.
@@ -107,7 +115,7 @@ namespace Zone.FileInterface.Helper
             return true;
         }
 
-        public bool TryExtractMetadata()
+        public bool TryExtractMetadata(out ZoneMetadata metadata)
         {
             try
             {
@@ -119,6 +127,7 @@ namespace Zone.FileInterface.Helper
             }
             catch
             {
+                metadata = null;
                 return false;
             }
         }

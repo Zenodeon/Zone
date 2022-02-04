@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Zone.FileInterface.Helper;
 
-namespace Zone
+namespace Zone.FileInterface
 {
     internal class ZoneMetadata
     {

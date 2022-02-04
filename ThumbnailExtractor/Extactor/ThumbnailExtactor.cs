@@ -17,7 +17,20 @@ public class ThumbnailExtactor
     public void GetFrame(string path, Action<MemoryStream> callback)
     {
         Task.Run(() =>
-            callback.Invoke(FFMPEGProccess.GetPNG(path, width, height)));
+            callback.Invoke(FFMPEGProccess.GetPNGStream(path, width, height)));
+    }
+
+    public void GetFrame(string path, Action<BitmapImage> callback)
+    {
+        try
+        {
+            Task.Run(() =>
+                callback.Invoke(FFMPEGProccess.GetPNG(path, width, height)));
+        }
+        catch
+        {
+            DLog.Log(path);
+        }
     }
 
     public void GetFrames(string path, Action<MemoryStream> callback)
