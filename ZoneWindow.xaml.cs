@@ -51,22 +51,25 @@ namespace Zone
         {
             using(LiteDatabase db = new LiteDatabase(@"D:\TestSite\TestDB\test.db"))
             {
-                var col = db.GetCollection<testClass>("testClass");
+                var col = db.GetCollection<FileBlock>("FileIndex");
 
-                var customer = new testClass
+                for (int i = 0; i < 5; i++)
                 {
-                };
+                    string id = i + "" + i * i * i * i;
+                    var block = new FileBlock
+                    {
+                        fileID = id,
+                        tags = new List<string>(),
+                    };
 
-                col.Insert(customer);
-                //customer.Name = "Joana Doe";
-                //col.Update(customer);
+                    col.Insert(block);
+                }
             }
         }
 
-        public class testClass
+        public class FileBlock
         {
             public string fileID { get; set; }
-
             public List<string> tags { get; set; }
         }
 
