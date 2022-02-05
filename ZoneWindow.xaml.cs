@@ -17,6 +17,7 @@ using DebugLogger.Wpf;
 using Ookii.Dialogs.Wpf;
 using Zone.View;
 using Zone.FileInterface;
+using LiteDB;
 
 namespace Zone
 {
@@ -43,7 +44,30 @@ namespace Zone
 
         private void DO2(object sender, RoutedEventArgs e)
         {
-            testLink.RemoveMetadata();
+            testDB();
+        }
+
+        public void testDB()
+        {
+            using(LiteDatabase db = new LiteDatabase(@"D:\TestSite\TestDB\test.db"))
+            {
+                var col = db.GetCollection<testClass>("testClass");
+
+                var customer = new testClass
+                {
+                };
+
+                col.Insert(customer);
+                //customer.Name = "Joana Doe";
+                //col.Update(customer);
+            }
+        }
+
+        public class testClass
+        {
+            public string fileID { get; set; }
+
+            public List<string> tags { get; set; }
         }
 
         private void OpenDialog(object sender, RoutedEventArgs e)

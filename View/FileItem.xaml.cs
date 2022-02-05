@@ -48,18 +48,18 @@ namespace Zone.View
             fileInfo = cFileInfo;
             fileNameBlock.Text = fileInfo.fileName;
 
-            ZoneMetadataReader reader = new ZoneMetadataReader();
-            if (reader.LocateMetadata(fileInfo.filePath))
-            {
-                if (reader.TryExtractMetadata(out ZoneMetadata metadata))
-                {
+            //ZoneMetadataReader reader = new ZoneMetadataReader();
+            //if (reader.LocateMetadata(fileInfo.filePath))
+            //{
+            //    if (reader.TryExtractMetadata(out ZoneMetadata metadata))
+            //    {
 
-                }
-            }
-            else
-            {
+            //    }
+            //}
+            //else
+            //{
 
-            }
+            //}
 
             ThumbnailExtactorManager._instance.GetThumbnail(fileInfo.filePath, SetThumbnail);
             //ThumbnailExtactorManager._instance.GetThumbnailPreview(fileInfo.filePath, SetThumbnailPreview);
