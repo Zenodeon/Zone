@@ -25,14 +25,16 @@ namespace Zone
            return byteArray1.Concat(byteArray2).ToArray();
         }
 
-        public static string GetMD5(string input)
+        public static string GetMD5(string hashContent) 
+            => GetMD5(Encoding.ASCII.GetBytes(hashContent));
+        
+        public static string GetMD5(byte[] hashContent)
         {
             // https://stackoverflow.com/a/24031467/16627173
             // Use input string to calculate MD5 hash
             using (System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create())
             {
-                byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
-                byte[] hashBytes = md5.ComputeHash(inputBytes);
+                byte[] hashBytes = md5.ComputeHash(hashContent);
 
                 // Convert the byte array to hexadecimal string
                 StringBuilder sb = new StringBuilder();

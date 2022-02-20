@@ -62,7 +62,7 @@ namespace Zone
                         tags = new List<string>(),
                     };
 
-                    col.Insert(block);
+                    col.Insert(block.fileID, block);        
                 }
             }
         }

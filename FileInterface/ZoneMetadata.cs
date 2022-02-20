@@ -9,14 +9,19 @@ namespace Zone.FileInterface
 {
     internal class ZoneMetadata
     {
-        public string uniqueID = string.Empty;
-        public long sharedCount;
+        public string fileMD5 { get; private set; }
+        public int sharedCount = 0;
 
         public List<string> tags = new List<string>();
 
+        public ZoneMetadata(string md5)
+        {
+            fileMD5 = md5;
+        }
+
         public void dummyFill()
         {
-            uniqueID = "asdubasd89asd9ah7b7893";
+            fileMD5 = "asdubasd89asd9ah7b7893";
             sharedCount = 432;
 
             tags.Clear();
@@ -29,7 +34,7 @@ namespace Zone.FileInterface
 
         public void dummyFill2()
         {
-            uniqueID = "sjdbf674gt9eubgf8734hs45";
+            fileMD5 = "sjdbf674gt9eubgf8734hs45";
             sharedCount = 26;
 
             tags.Clear();
