@@ -51,7 +51,7 @@ namespace Zone
         {
             using(LiteDatabase db = new LiteDatabase(@"D:\TestSite\TestDB\test.db"))
             {
-                var col = db.GetCollection<FileBlock>("FileIndex");
+                var col = db.GetCollection<FileBlock>("File");
 
                 for (int i = 0; i < 5; i++)
                 {
