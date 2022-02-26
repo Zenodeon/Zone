@@ -17,6 +17,7 @@ using DebugLogger.Wpf;
 using Ookii.Dialogs.Wpf;
 using Zone.View;
 using Zone.FileInterface;
+using Zone.Database;
 using LiteDB;
 
 namespace Zone
@@ -26,51 +27,23 @@ namespace Zone
     /// </summary>
     public partial class ZoneWindow : Window
     {
-        ZoneLink testLink = new ZoneLink();
-
         public ZoneWindow()
         {
             DLog.Instantiate();
 
             InitializeComponent();
 
+            new DatabaseHandler();
             new ThumbnailExtactorManager().Instantiate();     
         }
 
         private void DO(object sender, RoutedEventArgs e)
         {
-            testLink.ApplyMetadata();
+            
         }
 
         private void DO2(object sender, RoutedEventArgs e)
         {
-            testDB();
-        }
-
-        public void testDB()
-        {
-            using(LiteDatabase db = new LiteDatabase(@"D:\TestSite\TestDB\test.db"))
-            {
-                var col = db.GetCollection<FileBlock>("File");
-
-                for (int i = 0; i < 5; i++)
-                {
-                    string id = i + "" + i * i * i * i;
-                    var block = new FileBlock
-                    {
-                        fileID = id,
-                        tags = new List<string>(),
-                    };
-
-                    col.Insert(block.fileID, block);        
-                }
-            }
-        }
-
-        public class FileBlock
-        {
-            public string fileID { get; set; }
-            public List<string> tags { get; set; }
         }
 
         private void OpenDialog(object sender, RoutedEventArgs e)

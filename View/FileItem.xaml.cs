@@ -13,11 +13,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using DebugLogger.Wpf;
 using XamlAnimatedGif;
 using System.IO;
 using Zone.FileInterface;
-using Zone.FileInterface.Helper;
+using Zone.Database;
 
 namespace Zone.View
 {
@@ -32,6 +31,8 @@ namespace Zone.View
         private bool previewSet = false;
 
         private CFileInfo fileInfo;
+
+        ZoneMetadata metadata;
 
         public FileItem(int id)
         {
@@ -48,18 +49,7 @@ namespace Zone.View
             fileInfo = cFileInfo;
             fileNameBlock.Text = fileInfo.fileName;
 
-            //ZoneMetadataReader reader = new ZoneMetadataReader();
-            //if (reader.LocateMetadata(fileInfo.filePath))
-            //{
-            //    if (reader.TryExtractMetadata(out ZoneMetadata metadata))
-            //    {
-
-            //    }
-            //}
-            //else
-            //{
-
-            //}
+            metadata = ZoneLink.Link(fileInfo.filePath);
 
             ThumbnailExtactorManager._instance.GetThumbnail(fileInfo.filePath, SetThumbnail);
             //ThumbnailExtactorManager._instance.GetThumbnailPreview(fileInfo.filePath, SetThumbnailPreview);

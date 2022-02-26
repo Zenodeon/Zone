@@ -7,7 +7,7 @@ using Zone.FileInterface.Helper;
 
 namespace Zone.FileInterface
 {
-    internal class ZoneMetadata
+    public class ZoneMetadata
     {
         public string fileMD5 { get; private set; }
         public int sharedCount = 0;

@@ -8,80 +8,33 @@ using Newtonsoft.Json;
 using DebugLogger.Wpf;
 using Quazistax;
 using Zone.FileInterface.Helper;
+using Zone.Database;
 
 namespace Zone.FileInterface
 {
-    internal class ZoneLink
+    internal static class ZoneLink
     {
-        private int defaultAllocationSize = 1024;
+        private static int defaultAllocationSize = 1024;
 
-        string uriPath = @"D:\TestSite\TestSubjects\New folder (2)\";
-        string media = "unknown-3.png";
-        string media1 = "tenor.gif";
-        string media2 = "fumo_Cirno_city.mp4";
-        string media3 = "1614912655857.webm";
-        string media4 = "Apex Legends 2021.01.27 - 22.25.30.02.DVR.mp4";
+        static string uriPath = @"D:\TestSite\TestSubjects\New folder (2)\";
+        static string media = "unknown-3.png";
+        static string media1 = "tenor.gif";
+        static string media2 = "fumo_Cirno_city.mp4";
+        static string media3 = "1614912655857.webm";
+        static string media4 = "Apex Legends 2021.01.27 - 22.25.30.02.DVR.mp4";
 
-        string text = "testFile.txt";
-
-        public void ApplyMetadata()
+        public static ZoneMetadata Link(string filePath)
         {
-            test(uriPath + text);
-            //apply(uriPath + media4);
-        }
-
-        public void RemoveMetadata()
-        {
-            //remove(uriPath + media4);
-        }
-
-        public async void apply(string filePath)
-        {
-            byte[] fileData = await File.ReadAllBytesAsync(filePath);
-
-            ZoneMetadata zoneMetadata = new ZoneMetadata();
-            zoneMetadata.dummyFill();
-
-            byte[] embedData = ZoneMetadataHelper.GetEmbedData(zoneMetadata);
-
-            fileData = fileData.AppendByteArray(embedData);
-
-            await File.WriteAllBytesAsync(filePath, fileData);
-        }
-
-        public async void remove(string filePath)
-        {
-        }
-
-        public void test(string filePath)
-        {
-            using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite))
+            ZoneMetadataReader reader = new ZoneMetadataReader();
+            if (reader.LocateMetadata(filePath))
             {
-                //ZoneMetadataReader reader = new ZoneMetadataReader();
-
-                //if(reader.LocateMetadata(fs))
-                //{
-                //    DLog.Log("Located Header");
-                //    if (reader.TryExtractMetadata())
-                //        DLog.Log("Extraction Success");
-                //    else
-                //        DLog.Log("Extraction Failed");
-                //}
-
-                ZoneMetadata metadata = new ZoneMetadata();
-                metadata.dummyFill();
-
-                //ZoneMetadataWriter.EmbedMetadata(fs, metadata);
-
-                string json = JsonConvert.SerializeObject(metadata);
-
-                using (StreamWriter sw = new StreamWriter(fs))
-                {
-                    string embedData = ZoneMetadataHelper.GetEmbedDataString(metadata);
-                    fs.Seek(0, SeekOrigin.End);
-                    sw.WriteLine(embedData);
-                }
+                if (reader.TryExtractMetadata(out ZoneMetadata extractedMetadata))
+                    return extractedMetadata;
             }
+
+            ZoneMetadata metadata = ZoneMetadataHelper.GenerateMetadata(filePath);
+            DatabaseHandler.activeDatabase.AddMetadata(metadata);
+            return metadata;
         }
     }
 }
