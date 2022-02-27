@@ -39,11 +39,13 @@ namespace Zone
 
         private void DO(object sender, RoutedEventArgs e)
         {
-            
+            Zone.FileInterface.Helper.ZoneMetadataHelper.GenerateMetadata(ZoneLink.uriPath + ZoneLink.media);
         }
 
         private void DO2(object sender, RoutedEventArgs e)
         {
+            for (int i = 0; i < 100; i++)
+                DatabaseHandler.activeDatabase.testad();
         }
 
         private void OpenDialog(object sender, RoutedEventArgs e)

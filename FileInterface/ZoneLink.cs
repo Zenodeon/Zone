@@ -16,8 +16,8 @@ namespace Zone.FileInterface
     {
         private static int defaultAllocationSize = 1024;
 
-        static string uriPath = @"D:\TestSite\TestSubjects\New folder (2)\";
-        static string media = "unknown-3.png";
+        public static string uriPath = @"D:\TestSite\TestSubjects\New folder (2)\";
+        public static string media = "unknown-3.png";
         static string media1 = "tenor.gif";
         static string media2 = "fumo_Cirno_city.mp4";
         static string media3 = "1614912655857.webm";

@@ -10,7 +10,7 @@ namespace Zone.FileInterface.Helper
 {
     internal static class ZoneMetadataHelper
     {
-        public const int defaultSampleLength = 128;
+        public const int defaultSampleLength = 256;
 
         public const string header = "[ZMD|";
         public const string footer = "|ZMD]";
@@ -25,21 +25,36 @@ namespace Zone.FileInterface.Helper
             string json = JsonConvert.SerializeObject(metadata);
             string rawData = UUtility.ToBase64String(json);
 
-            return incluedHeader? $"{header}{rawData}{footer}" : rawData;
+            return incluedHeader ? $"{header}{rawData}{footer}" : rawData;
         }
 
         public static ZoneMetadata GenerateMetadata(string filePath)
         {
             string md5 = string.Empty;
-            using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite))
+            using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
             {
                 long streamLength = fs.Length;
-                int sampleLength = streamLength >= defaultSampleLength? defaultSampleLength : (int)streamLength;
+                int totalSampleLength = streamLength >= defaultSampleLength ? defaultSampleLength : (int)streamLength;
 
-                byte[] buffer = new byte[sampleLength];
-                fs.Read(buffer, 0, sampleLength);
+                totalSampleLength /= 2;
+                if (totalSampleLength % 2 != 0)
+                    totalSampleLength -= 1;
 
-                md5 = UUtility.GetMD5(buffer);
+                int sampleLength = totalSampleLength / 2;
+
+                byte[] mainbuffer = new byte[totalSampleLength];
+                byte[] endBuffer = new byte[sampleLength];
+
+                fs.Seek(0, SeekOrigin.Begin);
+                fs.Read(mainbuffer, 0, sampleLength);
+
+                fs.Seek(-sampleLength, SeekOrigin.End);
+                fs.Read(endBuffer, 0, sampleLength);
+
+                for (int i = 0; i < sampleLength; i++)
+                    mainbuffer[sampleLength + i] = endBuffer[i];
+
+                md5 = UUtility.GetMD5(mainbuffer);
             }
             return new ZoneMetadata(md5);
         }

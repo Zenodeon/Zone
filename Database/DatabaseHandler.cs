@@ -64,8 +64,7 @@ namespace Zone.Database
                         string id = i + "" + i * i * i * i;
                         var info = new ZFInfo
                         {
-                            md5 = id,
-                            tags = new List<string>(),
+                            md5 = id
                         };
 
                         col.Insert(info.md5, info);
@@ -73,10 +72,25 @@ namespace Zone.Database
                 }
         }
 
-        public class ZFInfo //Zone File Info
+        public void testad()
         {
+            if (EstablishDBConnection(out LiteDatabase database))
+                using (database)
+                {
+                    var col = database.GetCollection<ZFInfo>("testColl");
+
+                    string id = DateTime.Now.ToString();
+                    var info = new ZFInfo
+                    {
+                        md5 = id
+                    };
+                    col.Insert(info);
+                }
+        }
+
+        public class ZFInfo
+        { 
             public string md5 { get; set; }
-            public List<string> tags { get; set; }
         }
     }
 }
