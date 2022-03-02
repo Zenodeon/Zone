@@ -33,19 +33,21 @@ namespace Zone
 
             InitializeComponent();
 
-            new DatabaseHandler();
-            new ThumbnailExtactorManager().Instantiate();     
+            new DatabaseHandler(cleanDB: true);
+            new ThumbnailExtactorManager().Instantiate();
         }
 
         private void DO(object sender, RoutedEventArgs e)
         {
-            Zone.FileInterface.Helper.ZoneMetadataHelper.GenerateMetadata(ZoneLink.uriPath + ZoneLink.media);
+            //FileInterface.Helper.ZoneMetadataHelper.GenerateMetadata(ZoneLink.uriPath + ZoneLink.media);
         }
 
         private void DO2(object sender, RoutedEventArgs e)
         {
-            for (int i = 0; i < 100; i++)
-                DatabaseHandler.activeDatabase.testad();
+            //for (int i = 0; i < 100; i++)
+            //    DatabaseHandler.activeDatabase.testad();
+
+            //DLog.Log("Done");
         }
 
         private void OpenDialog(object sender, RoutedEventArgs e)

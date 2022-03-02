@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Zone.FileInterface.Helper;
+using Zone.Database;
 
 namespace Zone.FileInterface
 {
-    public class ZoneMetadata
+    public class ZoneMetadata : IDatabaseItem
     {
         public string fileMD5 { get; private set; }
         public int sharedCount = 0;
