@@ -99,37 +99,37 @@ namespace Zone.FileInterface.Helper
 
             fileStream.Read(dataBuffer, 0, bufferSize);
 
-            string rawData = encoding.GetString(dataBuffer);
-            int footerIndex = rawData.IndexOf(ZoneMetadataHelper.footer);
+            string tempData = encoding.GetString(dataBuffer);
+            int footerIndex = tempData.IndexOf(ZoneMetadataHelper.footer);
 
             if (footerIndex == -1)
                 return false;
 
-            string data = rawData.Substring(0, footerIndex);
-            rawData = data.Remove(0, ZoneMetadataHelper.header.Length);
+            string data = tempData.Substring(0, footerIndex);
+            rawData = tempData = data.Remove(0, ZoneMetadataHelper.header.Length);
 
             metadataContentIndex = metadataIndex + ZoneMetadataHelper.header.Length;
             metadataTotalLength = footerIndex + ZoneMetadataHelper.footer.Length;
-            metadataLength = rawData.Length;
+            metadataLength = tempData.Length;
 
             return true;
         }
 
         public bool TryExtractMetadata(out ZoneMetadata metadata)
         {
-            try
-            {
-                string data = string.Empty;
-                data = UUtility.DecodeBase64String(rawData);
-                metadata = JsonConvert.DeserializeObject<ZoneMetadata>(data);
+            if (rawData != string.Empty)
+                try
+                {
+                    string data = string.Empty;
+                    data = UUtility.DecodeBase64String(rawData);
+                    metadata = JsonConvert.DeserializeObject<ZoneMetadata>(data);
 
-                return true;
-            }
-            catch
-            {
-                metadata = null;
-                return false;
-            }
+                    return true;
+                }
+                catch { }
+
+            metadata = null;
+            return false;
         }
     }
 }

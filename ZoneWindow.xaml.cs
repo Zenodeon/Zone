@@ -86,6 +86,7 @@ namespace Zone
 
         private void CloseWindow(object sender, RoutedEventArgs e)
         {
+            DatabaseHandler.activeDatabase.CloseDB();
             Close();
         }
 

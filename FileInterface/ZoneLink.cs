@@ -25,15 +25,25 @@ namespace Zone.FileInterface
 
         public static ZoneMetadata Link(string filePath)
         {
+            ZoneMetadata metadata = null;
+
             ZoneMetadataReader reader = new ZoneMetadataReader();
             if (reader.LocateMetadata(filePath))
+                reader.TryExtractMetadata(out metadata);
+
+            DatabaseHandler dbhandler = DatabaseHandler.activeDatabase;
+
+            if (metadata == null)
             {
-                if (reader.TryExtractMetadata(out ZoneMetadata extractedMetadata))
-                    return extractedMetadata;
+                metadata = ZoneMetadataHelper.GenerateMetadata(filePath, embedMetadata: true);
+                dbhandler.AddMetadata(metadata);
+            }
+            else
+            {
+                if(!dbhandler.MetadataExists(metadata))
+                    dbhandler.AddMetadata(metadata);
             }
 
-            ZoneMetadata metadata = ZoneMetadataHelper.GenerateMetadata(filePath);
-            DatabaseHandler.activeDatabase.AddMetadata(metadata);
             return metadata;
         }
     }

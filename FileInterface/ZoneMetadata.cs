@@ -8,16 +8,17 @@ using Zone.Database;
 
 namespace Zone.FileInterface
 {
-    public class ZoneMetadata : IDatabaseItem
+    public class ZoneMetadata
     {
-        public string fileMD5 { get; private set; }
-        public int sharedCount = 0;
-
-        public List<string> tags = new List<string>();
+        public string fileMD5 { get; set; }
+        public int sharedCount { get; set; }
+        public List<string> tags { get; set; }
 
         public ZoneMetadata(string md5)
         {
             fileMD5 = md5;
+            sharedCount = 0;
+            tags = new List<string>();
         }
 
         public void dummyFill()

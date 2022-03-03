@@ -49,10 +49,13 @@ namespace Zone.View
             fileInfo = cFileInfo;
             fileNameBlock.Text = fileInfo.fileName;
 
-            metadata = ZoneLink.Link(fileInfo.filePath);
+            Task.Run(() =>
+            {
+                metadata = ZoneLink.Link(fileInfo.filePath);
 
-            ThumbnailExtactorManager._instance.GetThumbnail(fileInfo.filePath, SetThumbnail);
-            //ThumbnailExtactorManager._instance.GetThumbnailPreview(fileInfo.filePath, SetThumbnailPreview);
+                ThumbnailExtactorManager._instance.GetThumbnail(fileInfo.filePath, SetThumbnail);
+                //ThumbnailExtactorManager._instance.GetThumbnailPreview(fileInfo.filePath, SetThumbnailPreview);
+            });
         }
 
         private void SetThumbnail(BitmapImage thumbnail)

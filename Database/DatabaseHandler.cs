@@ -18,9 +18,9 @@ namespace Zone.Database
 
         public string dbPath { get; private set; }
 
-        private Dictionary<Collection, Queue<IDatabaseItem>> itemQueue = new Dictionary<Collection, Queue<IDatabaseItem>>();
+        private LiteDatabase database;
 
-        private bool DBConnected = false;
+        private bool dbConnected = false;
 
         public DatabaseHandler(bool cleanDB = false)
         {
@@ -30,17 +30,26 @@ namespace Zone.Database
             if (cleanDB)
                 TryDeleteOldDB();
 
-            if (EstablishDBConnection(out LiteDatabase database))
-            {
-                var col = database.GetCollection<ZFInfo>("testColl");
+            EstablishDBConnection();
 
-                for (int i = 0; i < 10; i++)
-                {
-                    aaaa(i, col);
-                }
+            //if (EstablishDBConnection(out LiteDatabase database))
+            //{
+            //    var col = database.GetCollection<ZFInfo>("testColl");
 
-                //database.Checkpoint();
-            }
+            //    for (int i = 0; i < 10; i++)
+            //    {
+            //        aaaa(i, col);
+            //        database.Checkpoint();
+            //    }
+
+            //    database.Checkpoint();
+            //}
+        }
+
+        public void CloseDB()
+        {
+            database.Dispose();
+            dbConnected = false;
         }
 
         private void aaaa(int idd, ILiteCollection<ZFInfo> col)
@@ -51,7 +60,6 @@ namespace Zone.Database
                 md5 = id
             };
             col.Insert(idd, info);
-            //Thread.Sleep(1);
         }
 
         public DatabaseHandler(string dbPath, bool cleanDB = false)
@@ -69,112 +77,62 @@ namespace Zone.Database
                 File.Delete(dbPath);
         }
 
-        private bool EstablishDBConnection(out LiteDatabase database)
+        private void EstablishDBConnection()
         {
             try
             {
-                //LiteDB.Engine.LiteEngine liteEngine = new LiteDB.Engine.LiteEngine(dbPath);   
-                //database = new LiteDatabase(liteEngine, mapper: null, disposeOnClose: false);  
                 database = new LiteDatabase(dbPath);
-                return true;
+                dbConnected = true;
             }
             catch
             {
                 database = null;
-                return false;
+                dbConnected = false;
             }
         }
 
         public void AddMetadata(ZoneMetadata metadata)
         {
-            //QueueItemToAdd(Collection.ZoneFiles, metadata);
-            if (EstablishDBConnection(out LiteDatabase database))
-                using (database)
-                {
-                    var col = database.GetCollection<ZoneMetadata>("ZoneFiles");
-                    col.Insert(metadata.fileMD5, metadata);
-                }
+            lock (database)
+            {
+                var col = database.GetCollection<ZoneMetadata>("ZoneFiles");
+                col.Insert(metadata.fileMD5, metadata);
+                database.Checkpoint();
+            }
+        }
+
+        public bool MetadataExists(ZoneMetadata metadata)
+        {
+            var col = database.GetCollection<ZoneMetadata>("ZoneFiles");
+            return col.Exists(Query.EQ("_id", metadata.fileMD5));
         }
 
         public void testadd()
         {
-            if (EstablishDBConnection(out LiteDatabase database))
-                using (database)
-                {
-                    var col = database.GetCollection<ZFInfo>("ZoneFiles");
+            var col = database.GetCollection<ZFInfoTestClass>("ZoneFiles");
 
-                    for (int i = 0; i < 5; i++)
-                    {
-                        string id = i + "" + i * i * i * i;
-                        var info = new ZFInfo
-                        {
-                            md5 = id
-                        };
-
-                        col.Insert(info.md5, info);
-                    }
-                }
-        }
-
-        public void testad()
-        {
-            if (EstablishDBConnection(out LiteDatabase database))
-                using (database)
-                {
-                    var col = database.GetCollection<ZFInfo>("testColl");
-
-                    string id = DateTime.Now.ToString();
-                    var info = new ZFInfo
-                    {
-                        md5 = id
-                    };
-                    col.Insert(info);
-                }
-        }
-
-        private void QueueItemToAdd(Collection collection, IDatabaseItem item)
-        {
-            lock (itemQueue)
+            for (int i = 0; i < 5; i++)
             {
-                if (itemQueue.ContainsKey(collection))
-                    itemQueue[collection].Enqueue(item);
-                else
+                string id = i + "" + i * i * i * i;
+                var info = new ZFInfoTestClass
                 {
-                    Queue<IDatabaseItem> queue = new Queue<IDatabaseItem>();
-                    queue.Enqueue(item);
-                    itemQueue.Add(collection, queue);
+                    testField = id
+                };
 
-                    //UpdateDB();
-                }
+                col.Insert(info.testField, info);
             }
+            database.Checkpoint();
         }
-
-        private void UpdateDB()
-        {
-            
-        }
-
-        private void ProccessChanges()
-        {
-            if (EstablishDBConnection(out LiteDatabase database))
-                using (database)
-                {
-                }
-        }
-
-        private void AddQueuedItems(LiteDatabase database)
-        {
-        }
-
+        
         public enum Collection
         {
             ZoneFiles,
             testColl
         }
 
-        public class ZFInfo : IDatabaseItem
+        public class ZFInfoTestClass
         { 
-            public string md5 { get; set; }
+            public string testField { get; set; }
         }
     }
 }

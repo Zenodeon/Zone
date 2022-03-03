@@ -28,10 +28,15 @@ namespace Zone.FileInterface.Helper
             return incluedHeader ? $"{header}{rawData}{footer}" : rawData;
         }
 
-        public static ZoneMetadata GenerateMetadata(string filePath)
+        public static ZoneMetadata GenerateMetadata(string filePath, bool embedMetadata = false)
         {
-            string md5 = string.Empty;
-            using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+            ZoneMetadata metadata;
+
+            FileAccess fileAccess = FileAccess.Read;
+            if (embedMetadata)
+                fileAccess = FileAccess.ReadWrite;
+
+            using (FileStream fs = new FileStream(filePath, FileMode.Open, fileAccess))
             {
                 long streamLength = fs.Length;
                 int totalSampleLength = streamLength >= defaultSampleLength ? defaultSampleLength : (int)streamLength;
@@ -54,9 +59,14 @@ namespace Zone.FileInterface.Helper
                 for (int i = 0; i < sampleLength; i++)
                     mainbuffer[sampleLength + i] = endBuffer[i];
 
-                md5 = UUtility.GetMD5(mainbuffer);
+                string md5 = UUtility.GetMD5(mainbuffer);
+
+                metadata = new ZoneMetadata(md5);
+
+                if (embedMetadata)
+                    ZoneMetadataWriter.EmbedMetadata(fs, metadata, checkForOldMetadata: false);
             }
-            return new ZoneMetadata(md5);
+            return metadata;
         }
     }
 }

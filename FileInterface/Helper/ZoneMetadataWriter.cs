@@ -10,11 +10,15 @@ namespace Zone.FileInterface.Helper
 {
     internal class ZoneMetadataWriter
     {
-        public static void EmbedMetadata(FileStream fs, ZoneMetadata metadata)
+        public static void EmbedMetadata(FileStream fs, ZoneMetadata metadata, bool checkForOldMetadata = true)
         {
             ZoneMetadataReader reader = new ZoneMetadataReader();
 
-            if (reader.LocateMetadata(fs))
+            bool replaceMetadata = false;
+            if (checkForOldMetadata)
+                replaceMetadata = reader.LocateMetadata(fs);
+
+            if (replaceMetadata)
             {
                 byte[] embedData = ZoneMetadataHelper.GetEmbedData(metadata, incluedHeader: false);
                 QSFile.ReplaceFilePart(fs, reader.metadataContentIndex, reader.metadataLength, embedData);
