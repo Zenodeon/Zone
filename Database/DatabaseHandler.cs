@@ -52,12 +52,12 @@ namespace Zone.Database
             dbConnected = false;
         }
 
-        private void aaaa(int idd, ILiteCollection<ZFInfo> col)
+        private void aaaa(int idd, ILiteCollection<ZFInfoTestClass> col)
         {
             string id = DateTime.Now.ToString("s:fff");
-            var info = new ZFInfo
+            var info = new ZFInfoTestClass
             {
-                md5 = id
+                testField = id
             };
             col.Insert(idd, info);
         }
