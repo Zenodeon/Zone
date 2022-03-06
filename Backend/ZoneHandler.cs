@@ -40,9 +40,7 @@ namespace Zone.Backend
             string thumbnailPath = $@"{thumbnailFolderPath}\{fileID}";
 
             if (File.Exists(thumbnailPath))
-            {
                 Task.Run(() => callback.Invoke(LoadThumbnail(thumbnailPath)));
-            }
             else
                 ThumbnailExtactorManager._instance.GetThumbnail(filePath, callback);
         }
