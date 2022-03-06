@@ -16,9 +16,8 @@ using System.Windows.Shapes;
 using XamlAnimatedGif;
 using System.IO;
 using Zone.FileInterface;
-using Zone.Database;
 
-namespace Zone.View
+namespace Zone.Component.FileItemCmpt
 {
     /// <summary>
     /// Interaction logic for FileItem.xaml

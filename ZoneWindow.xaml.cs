@@ -13,12 +13,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using DebugLogger.Wpf;
 using Ookii.Dialogs.Wpf;
 using Zone.View;
-using Zone.FileInterface;
 using Zone.Database;
-using LiteDB;
+using Zone.Backend;
+using Zone.Component.FileItemCmpt;
 
 namespace Zone
 {
@@ -27,13 +26,18 @@ namespace Zone
     /// </summary>
     public partial class ZoneWindow : Window
     {
+        public static ZoneWindow _instance;
+
+        public ZoneHandler zone { get; private set; }
+
         public ZoneWindow()
         {
             DLog.Instantiate();
 
             InitializeComponent();
 
-            new DatabaseHandler(cleanDB: true);
+            _instance = this;
+
             new ThumbnailExtactorManager().Instantiate();
         }
 
@@ -53,11 +57,15 @@ namespace Zone
         private void OpenDialog(object sender, RoutedEventArgs e)
         {
             VistaFolderBrowserDialog fileDialog = new VistaFolderBrowserDialog();
+            fileDialog.Multiselect = false;
 
             bool? success = fileDialog.ShowDialog();
             bool selected = success == null ? false : success.Value;
+            //if (selected)
+            //    LoadDirectory(fileDialog.SelectedPath);
+
             if (selected)
-                LoadDirectory(fileDialog.SelectedPath);
+                zone = new ZoneHandler(fileDialog.SelectedPath);
         }
 
         private void LoadDirectory(string directoryPath)

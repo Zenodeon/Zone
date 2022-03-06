@@ -14,6 +14,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using DebugLogger.Wpf;
 using WpfToolkit.Controls;
+using Zone.Component.FileItemCmpt;
+
 namespace Zone.View
 {
     /// <summary>

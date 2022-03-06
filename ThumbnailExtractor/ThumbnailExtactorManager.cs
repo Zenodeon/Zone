@@ -23,6 +23,9 @@ public class ThumbnailExtactorManager
 
     public void Instantiate()
     {
+        if (_instance != null)
+            return;
+
         _instance = this;
         extactor = new ThumbnailExtactor();
 

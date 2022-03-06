@@ -6,7 +6,7 @@ using System.Windows.Controls;
 using System.Text;
 using Zone.View;
 
-namespace Zone
+namespace Zone.Component.FileItemCmpt
 {
     public class ActiveFileItemList<T> : BindingList<T> where T : ContentPresenter
     {

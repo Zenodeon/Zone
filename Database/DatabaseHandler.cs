@@ -14,53 +14,11 @@ namespace Zone.Database
     {
         public static DatabaseHandler activeDatabase;
 
-        string testPath = @"D:\TestSite\TestDB\test.db";
-
         public string dbPath { get; private set; }
 
         private LiteDatabase database;
 
         private bool dbConnected = false;
-
-        public DatabaseHandler(bool cleanDB = false)
-        {
-            this.dbPath = testPath;
-            activeDatabase = this;
-
-            if (cleanDB)
-                TryDeleteOldDB();
-
-            EstablishDBConnection();
-
-            //if (EstablishDBConnection(out LiteDatabase database))
-            //{
-            //    var col = database.GetCollection<ZFInfo>("testColl");
-
-            //    for (int i = 0; i < 10; i++)
-            //    {
-            //        aaaa(i, col);
-            //        database.Checkpoint();
-            //    }
-
-            //    database.Checkpoint();
-            //}
-        }
-
-        public void CloseDB()
-        {
-            database.Dispose();
-            dbConnected = false;
-        }
-
-        private void aaaa(int idd, ILiteCollection<ZFInfoTestClass> col)
-        {
-            string id = DateTime.Now.ToString("s:fff");
-            var info = new ZFInfoTestClass
-            {
-                testField = id
-            };
-            col.Insert(idd, info);
-        }
 
         public DatabaseHandler(string dbPath, bool cleanDB = false)
         {
@@ -91,6 +49,12 @@ namespace Zone.Database
             }
         }
 
+        public void CloseDB()
+        {
+            database.Dispose();
+            dbConnected = false;
+        }
+
         public void AddMetadata(ZoneMetadata metadata)
         {
             lock (database)
@@ -105,6 +69,41 @@ namespace Zone.Database
         {
             var col = database.GetCollection<ZoneMetadata>("ZoneFiles");
             return col.Exists(Query.EQ("_id", metadata.fileMD5));
+        }
+  
+        public enum Collection
+        {
+            ZoneFiles,
+            ZoneDetails,
+            testColl
+        }
+
+        #region Test Region
+
+        string testPath = @"D:\TestSite\TestDB\test.db";
+
+        public DatabaseHandler(bool cleanDB = false)
+        {
+            this.dbPath = testPath;
+            activeDatabase = this;
+
+            if (cleanDB)
+                TryDeleteOldDB();
+
+            EstablishDBConnection();
+
+            //if (EstablishDBConnection(out LiteDatabase database))
+            //{
+            //    var col = database.GetCollection<ZFInfo>("testColl");
+
+            //    for (int i = 0; i < 10; i++)
+            //    {
+            //        aaaa(i, col);
+            //        database.Checkpoint();
+            //    }
+
+            //    database.Checkpoint();
+            //}
         }
 
         public void testadd()
@@ -123,16 +122,22 @@ namespace Zone.Database
             }
             database.Checkpoint();
         }
-        
-        public enum Collection
+
+        private void aaaa(int idd, ILiteCollection<ZFInfoTestClass> col)
         {
-            ZoneFiles,
-            testColl
+            string id = DateTime.Now.ToString("s:fff");
+            var info = new ZFInfoTestClass
+            {
+                testField = id
+            };
+            col.Insert(idd, info);
         }
 
         public class ZFInfoTestClass
-        { 
+        {
             public string testField { get; set; }
         }
+
+        #endregion
     }
 }
