@@ -51,8 +51,8 @@ namespace Zone.Component.FileItemCmpt
             Task.Run(() =>
             {
                 metadata = ZoneLink.Link(fileInfo.filePath);
-
-                ThumbnailExtactorManager._instance.GetThumbnail(fileInfo.filePath, SetThumbnail);
+                ZoneWindow._instance.zone.GetThumbnail(metadata.fileMD5, fileInfo.filePath, SetThumbnail);
+                //ThumbnailExtactorManager._instance.GetThumbnail(fileInfo.filePath, SetThumbnail);
                 //ThumbnailExtactorManager._instance.GetThumbnailPreview(fileInfo.filePath, SetThumbnailPreview);
             });
         }

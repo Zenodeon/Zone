@@ -27,6 +27,8 @@ namespace Zone.Database
 
             if (cleanDB)
                 TryDeleteOldDB();
+
+            EstablishDBConnection();
         }
 
         private void TryDeleteOldDB()

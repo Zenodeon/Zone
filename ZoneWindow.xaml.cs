@@ -18,6 +18,7 @@ using Zone.View;
 using Zone.Database;
 using Zone.Backend;
 using Zone.Component.FileItemCmpt;
+using Zone.ThumbnailExtractor;
 
 namespace Zone
 {
@@ -65,24 +66,18 @@ namespace Zone
             //    LoadDirectory(fileDialog.SelectedPath);
 
             if (selected)
+            {
                 zone = new ZoneHandler(fileDialog.SelectedPath);
+                DisplayZoneFiles();
+            }
         }
 
-        private void LoadDirectory(string directoryPath)
+        private void DisplayZoneFiles()
         {
-            DLog.Log("SelectedPath : " + directoryPath);
+            zone.LoadZone();
 
-            int count = 0;
-            foreach (string path in Directory.GetFiles(directoryPath))
-            {
-                FileItem fileItem = new FileItem(count);
-                count++;
-
-                CFileInfo fileInfo = new CFileInfo(path);
-                fileItem.Configure(fileInfo);
-
-                fileView.AddFileItem(fileItem);
-            }
+                foreach (FileItem item in zone.fileItems)
+                    fileView.AddFileItem(item);
         }
 
         #region UI Interface
@@ -94,7 +89,8 @@ namespace Zone
 
         private void CloseWindow(object sender, RoutedEventArgs e)
         {
-            DatabaseHandler.activeDatabase.CloseDB();
+            if (zone != null)
+                zone.Close();
             Close();
         }
 

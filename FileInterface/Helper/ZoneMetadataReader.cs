@@ -12,8 +12,8 @@ namespace Zone.FileInterface.Helper
     internal class ZoneMetadataReader
     {
         private const int DefaultBufferSize = 4096;
-        private const int testBufferSize = 20;
-
+        private const int byteScanLimit = 10240;
+        private const int testBlockSize = 20;
         Encoding encoding = Encoding.UTF8;
 
         public long metadataIndex = -1;
@@ -62,6 +62,7 @@ namespace Zone.FileInterface.Helper
 
             //Looking for Metadata Header Index
             long patternIndex = -1;
+            long scannedByteCount = 0;
             while (pos >= 0)
             {
                 fileStream.Read(fileBuffer, 0, bufferSize);
@@ -74,9 +75,10 @@ namespace Zone.FileInterface.Helper
                     break;
                 }
 
-                if (pos == 0)
+                if (pos == 0 || scannedByteCount > byteScanLimit)
                     break;
 
+                scannedByteCount += bufferIntervel;
                 pos -= bufferIntervel;
                 if (pos < 0)
                     pos = 0;

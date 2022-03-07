@@ -7,35 +7,38 @@ using System.Windows.Media.Imaging;
 using DebugLogger.Wpf;
 using System.IO;
 
-public class ThumbnailExtactor 
+namespace Zone.ThumbnailExtractor.Extactor
 {
-    private int width = 256;
-    private int height = 256;
-    private int duration = 4;
-    private int fps = 30;
-
-    public void GetFrame(string path, Action<MemoryStream> callback)
+    public class ThumbnailExtactor
     {
-        Task.Run(() =>
-            callback.Invoke(FFMPEGProccess.GetPNGStream(path, width, height)));
-    }
+        private int width = 256;
+        private int height = 256;
+        private int duration = 4;
+        private int fps = 30;
 
-    public void GetFrame(string path, Action<BitmapImage> callback)
-    {
-        try
+        public void GetFrame(string path, Action<MemoryStream> callback)
         {
             Task.Run(() =>
-                callback.Invoke(FFMPEGProccess.GetPNG(path, width, height)));
+                callback.Invoke(FFMPEGProccess.GetPNGStream(path, width, height)));
         }
-        catch
-        {
-            DLog.Log(path);
-        }
-    }
 
-    public void GetFrames(string path, Action<MemoryStream> callback)
-    {
-        Task.Run(() =>
-            callback.Invoke(FFMPEGProccess.GetGIF(path, duration, fps, width, height)));
+        public void GetFrame(string path, Action<BitmapImage> callback)
+        {
+            try
+            {
+                Task.Run(() =>
+                    callback.Invoke(FFMPEGProccess.GetPNG(path, width, height)));
+            }
+            catch
+            {
+                DLog.Log(path);
+            }
+        }
+
+        public void GetFrames(string path, Action<MemoryStream> callback)
+        {
+            Task.Run(() =>
+                callback.Invoke(FFMPEGProccess.GetGIF(path, duration, fps, width, height)));
+        }
     }
 }
