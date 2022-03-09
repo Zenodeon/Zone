@@ -10,24 +10,24 @@ namespace Zone.FileInterface.Helper
 {
     internal class ZoneMetadataWriter
     {
-        public static void EmbedMetadata(FileStream fs, ZoneMetadata metadata, bool checkForOldMetadata = true)
+        public static void EmbedMetadata(FileStream fs, ZoneMetadata metadata, bool replaceOldMetadata = true)
         {
             ZoneMetadataReader reader = new ZoneMetadataReader();
 
             bool replaceMetadata = false;
-            if (checkForOldMetadata)
+            if (replaceOldMetadata)
                 replaceMetadata = reader.LocateMetadata(fs);
 
             if (replaceMetadata)
             {
-                byte[] embedData = ZoneMetadataHelper.GetEmbedData(metadata, incluedHeader: false);
+                byte[] embedData = ZoneMetadataHelper.CreateEmbedData(metadata, incluedHeader: false);
                 QSFile.ReplaceFilePart(fs, reader.metadataContentIndex, reader.metadataLength, embedData);
             }
             else
             {
                 using (StreamWriter sw = new StreamWriter(fs))
                 {
-                    string embedData = ZoneMetadataHelper.GetEmbedDataString(metadata);
+                    string embedData = ZoneMetadataHelper.CreateEmbedDataString(metadata);
 
                     fs.Seek(0, SeekOrigin.End);
                     sw.WriteLine(Environment.NewLine + embedData);
@@ -35,9 +35,11 @@ namespace Zone.FileInterface.Helper
             }
         }
 
-        public void RemoveEmbedData(FileStream fs)
+        public static void RemoveEmbedData(FileStream fs)
         {
-
+            ZoneMetadataReader reader = new ZoneMetadataReader();
+            if (reader.LocateMetadata(fs))
+                QSFile.DeleteFilePart(fs, reader.metadataContentIndex, reader.metadataLength);
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Zone.FileInterface.Helper
     {
         private const int DefaultBufferSize = 4096;
         private const int byteScanLimit = 10240;
-        private const int testBlockSize = 20;
+
         Encoding encoding = Encoding.UTF8;
 
         public long metadataIndex = -1;

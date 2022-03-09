@@ -15,12 +15,10 @@ namespace Zone.FileInterface.Helper
         public const string header = "[ZMD|";
         public const string footer = "|ZMD]";
 
-        public static byte[] GetEmbedData(ZoneMetadata metadata, bool incluedHeader = true)
-        {
-            return Encoding.UTF8.GetBytes(GetEmbedDataString(metadata, incluedHeader));
-        }
+        public static byte[] CreateEmbedData(ZoneMetadata metadata, bool incluedHeader = true)
+        => Encoding.UTF8.GetBytes(CreateEmbedDataString(metadata, incluedHeader));    
 
-        public static string GetEmbedDataString(ZoneMetadata metadata, bool incluedHeader = true)
+        public static string CreateEmbedDataString(ZoneMetadata metadata, bool incluedHeader = true)
         {
             string json = JsonConvert.SerializeObject(metadata);
             string rawData = UUtility.ToBase64String(json);
@@ -64,7 +62,7 @@ namespace Zone.FileInterface.Helper
                 metadata = new ZoneMetadata(md5);
 
                 if (embedMetadata)
-                    ZoneMetadataWriter.EmbedMetadata(fs, metadata, checkForOldMetadata: false);
+                    ZoneMetadataWriter.EmbedMetadata(fs, metadata, replaceOldMetadata: false);
             }
             return metadata;
         }

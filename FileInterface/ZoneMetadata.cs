@@ -10,15 +10,30 @@ namespace Zone.FileInterface
 {
     public class ZoneMetadata
     {
+        public string ver = "0.1";
+
+        public string fileID { get; set; }
+
+        public DateTime addedDT { get; set; }
         public string fileMD5 { get; set; }
+
         public int sharedCount { get; set; }
         public List<string> tags { get; set; }
 
         public ZoneMetadata(string md5)
         {
+            addedDT = DateTime.UtcNow;
             fileMD5 = md5;
+
+            GenerateFileID();
+
             sharedCount = 0;
             tags = new List<string>();
+        }
+
+        private void GenerateFileID()
+        {
+            //DLog.Log(creationDateTime.ToString());
         }
 
         public void dummyFill()
