@@ -3,11 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DeviceId;
 
 namespace Zone
 {
-    internal static class UUtility
+    public static class UUtility
     {
+        private static string _deviceID = string.Empty;
+        public static string deviceID { 
+            get
+            {
+                if(_deviceID == string.Empty)
+                    _deviceID = GetDeviceID();
+                return _deviceID;
+            }
+        }
+
         public static string ToBase64String(string text)
         {
             byte[] plainTextBytes = Encoding.UTF8.GetBytes(text);
@@ -22,12 +33,12 @@ namespace Zone
 
         public static byte[] AppendByteArray(this byte[] byteArray1, byte[] byteArray2)
         {
-           return byteArray1.Concat(byteArray2).ToArray();
+            return byteArray1.Concat(byteArray2).ToArray();
         }
 
-        public static string GetMD5(string hashContent) 
+        public static string GetMD5(string hashContent)
             => GetMD5(Encoding.ASCII.GetBytes(hashContent));
-        
+
         public static string GetMD5(byte[] hashContent)
         {
             // https://stackoverflow.com/a/24031467/16627173
@@ -43,6 +54,14 @@ namespace Zone
 
                 return sb.ToString();
             }
+        }
+
+        public static string GetDeviceID()
+        {
+            return new DeviceIdBuilder().
+                AddMachineName().
+                AddMacAddress().
+                ToString();
         }
     }
 }

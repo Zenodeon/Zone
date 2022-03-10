@@ -17,7 +17,9 @@ namespace Zone.FileInterface
         public DateTime addedDT { get; set; }
         public string fileMD5 { get; set; }
 
+        public string lastDevicID { get; set; }
         public int sharedCount { get; set; }
+
         public List<string> tags { get; set; }
 
         public ZoneMetadata(string md5)
@@ -25,41 +27,16 @@ namespace Zone.FileInterface
             addedDT = DateTime.UtcNow;
             fileMD5 = md5;
 
-            GenerateFileID();
+            fileID = UUtility.GetMD5(fileMD5 + addedDT.ToString("dd:M:yyyy:H:m:s:ffff"));
 
             sharedCount = 0;
             tags = new List<string>();
         }
 
-        private void GenerateFileID()
+        public void CheckIfNewDevice()
         {
-            //DLog.Log(creationDateTime.ToString());
-        }
-
-        public void dummyFill()
-        {
-            fileMD5 = "asdubasd89asd9ah7b7893";
-            sharedCount = 432;
-
-            tags.Clear();
-            tags.Add("1234567890123456");
-            tags.Add("test 1");
-            tags.Add("test 2");
-            tags.Add("test 3");
-            tags.Add("test 4");
-        }
-
-        public void dummyFill2()
-        {
-            fileMD5 = "sjdbf674gt9eubgf8734hs45";
-            sharedCount = 26;
-
-            tags.Clear();
-            tags.Add("test 0");
-            tags.Add("test 5");
-            tags.Add("test 6");
-            tags.Add("test 7");
-            tags.Add("test 8");
+            if (lastDevicID != UUtility.deviceID)
+                sharedCount++;
         }
     }
 }

@@ -62,7 +62,7 @@ namespace Zone.Database
             lock (database)
             {
                 var col = database.GetCollection<ZoneMetadata>("ZoneFiles");
-                col.Insert(metadata.fileMD5, metadata);
+                col.Insert(metadata.fileID, metadata);
                 database.Checkpoint();
             }
         }
@@ -70,7 +70,7 @@ namespace Zone.Database
         public bool MetadataExists(ZoneMetadata metadata)
         {
             var col = database.GetCollection<ZoneMetadata>("ZoneFiles");
-            return col.Exists(Query.EQ("_id", metadata.fileMD5));
+            return col.Exists(Query.EQ("_id", metadata.fileID));
         }
   
         public enum Collection
