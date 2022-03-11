@@ -10,8 +10,6 @@ namespace Zone.Component.FileItemCmpt
 {
     public class ActiveFileItemList<T> : BindingList<T> where T : ContentPresenter
     {
-        //private List<FileItem> activeLogM = new List<FileItem>();
-
         private SortedList<int, FileItem> pairs = new SortedList<int, FileItem>();
 
         public void Initialize()
@@ -27,20 +25,12 @@ namespace Zone.Component.FileItemCmpt
             pairs.Add(id, item);
 
             int i = pairs.IndexOfKey(id);
-
             this.Insert(i, (T)item.frame);
-        }
-
-        private void dummy()
-        {
-
         }
 
         public void Remove(FileItem item)
         {
-            //activeLogM.Remove(logM);
             pairs.Remove(item.id);
-
             base.Remove((T)item.frame);
         }
 
@@ -68,21 +58,12 @@ namespace Zone.Component.FileItemCmpt
 
         public new void Clear()
         {
-            //activeLogM.Clear();
             pairs.Clear();
-
             base.Clear();
         }
 
 
-        [Obsolete]
-        public new void Add(T item)
-        {
-        }
-
-        [Obsolete]
-        public new void Remove(T item)
-        {
-        }
+        [Obsolete] public new void Add(T item) { }
+        [Obsolete] public new void Remove(T item) { }
     }
 }

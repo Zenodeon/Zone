@@ -9,14 +9,10 @@ namespace Zone.FileInterface.Helper
     internal static class BytePatternLocator
     {
         public static int IndexOfPattern(this byte[] body, byte[] pattern)
-        {
-            return FindPattern(body, pattern, searchDirectionToRight: true);
-        }
+            => FindPattern(body, pattern, searchDirectionToRight: true);
 
         public static int LastIndexOfPattern(this byte[] body, byte[] pattern)
-        {
-            return FindPattern(body, pattern, searchDirectionToRight: false);
-        }
+            => FindPattern(body, pattern, searchDirectionToRight: false);
 
         private static int FindPattern(this byte[] body, byte[] pattern, bool searchDirectionToRight)
         {

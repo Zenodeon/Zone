@@ -9,13 +9,13 @@ namespace Zone
 {
     public static class UUtility
     {
-        private static string _deviceID = string.Empty;
-        public static string deviceID { 
+        private static string _deviceMD5 = string.Empty;
+        public static string deviceMD5 { 
             get
             {
-                if(_deviceID == string.Empty)
-                    _deviceID = GetDeviceID();
-                return _deviceID;
+                if(_deviceMD5 == string.Empty)
+                    _deviceMD5 = GetDeviceMD5();
+                return _deviceMD5;
             }
         }
 
@@ -56,12 +56,10 @@ namespace Zone
             }
         }
 
-        public static string GetDeviceID()
+        public static string GetDeviceMD5()
         {
-            return new DeviceIdBuilder().
-                AddMachineName().
-                AddMacAddress().
-                ToString();
+            string deviceID = new DeviceIdBuilder().AddMachineName().AddMacAddress().ToString();
+            return GetMD5(deviceID);
         }
     }
 }

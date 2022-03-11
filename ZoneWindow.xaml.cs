@@ -44,7 +44,6 @@ namespace Zone
 
         private void DO(object sender, RoutedEventArgs e)
         {
-            DLog.Log(DateTime.UtcNow.ToString("dd:M:yyyy:H:m:s:ffff") + "");
         }
 
         private void DO2(object sender, RoutedEventArgs e)

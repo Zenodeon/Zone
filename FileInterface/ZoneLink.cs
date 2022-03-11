@@ -40,8 +40,13 @@ namespace Zone.FileInterface
             }
             else
             {
-                if(!dbhandler.MetadataExists(metadata))
+                //Checking for any Dupicate Files and given new date for unique fileID 
+                if (!dbhandler.MetadataExists(metadata))
+                {
+                    if(dbhandler.MetadataExists(metadata))
+                        metadata.UpdateAddedDate();
                     dbhandler.AddMetadata(metadata);
+                }
             }
 
             return metadata;

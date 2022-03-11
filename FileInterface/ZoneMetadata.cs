@@ -17,7 +17,7 @@ namespace Zone.FileInterface
         public DateTime addedDT { get; set; }
         public string fileMD5 { get; set; }
 
-        public string lastDevicID { get; set; }
+        public string lastDevicMD5 { get; set; }
         public int sharedCount { get; set; }
 
         public List<string> tags { get; set; }
@@ -27,7 +27,7 @@ namespace Zone.FileInterface
             addedDT = DateTime.UtcNow;
             fileMD5 = md5;
 
-            fileID = UUtility.GetMD5(fileMD5 + addedDT.ToString("dd:M:yyyy:H:m:s:ffff"));
+            GenerateFileID();
 
             sharedCount = 0;
             tags = new List<string>();
@@ -35,8 +35,17 @@ namespace Zone.FileInterface
 
         public void CheckIfNewDevice()
         {
-            if (lastDevicID != UUtility.deviceID)
+            if (lastDevicMD5 != UUtility.deviceMD5)
                 sharedCount++;
         }
+
+        public void UpdateAddedDate()
+        {
+            addedDT = DateTime.UtcNow;
+            GenerateFileID();
+        }
+      
+        public void GenerateFileID() 
+            => fileID = UUtility.GetMD5(fileMD5 + addedDT.ToString("dd:M:yyyy:H:m:s:ffff"));
     }
 }
