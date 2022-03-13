@@ -21,6 +21,7 @@ namespace Zone.FileInterface
         public int sharedCount { get; set; }
 
         public List<string> tags { get; set; }
+        public int tagCount { get; set; }
 
         public ZoneMetadata(string md5)
         {
