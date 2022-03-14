@@ -16,7 +16,8 @@
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="80"/>
             </Grid.RowDefinitions>
-          
+            
+            <local:FileSelectionPreviewView Grid.Row="0" x:Name="PreviewView"/>
         </Grid>
     </Grid>
 </UserControl>

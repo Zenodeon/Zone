@@ -18,10 +18,11 @@ namespace Zone.FileInterface
 
         public static string uriPath = @"D:\TestSite\TestSubjects\New folder (2)\";
         public static string media = "unknown-3.png";
-        static string media1 = "tenor.gif";
-        static string media2 = "fumo_Cirno_city.mp4";
-        static string media3 = "1614912655857.webm";
-        static string media4 = "Apex Legends 2021.01.27 - 22.25.30.02.DVR.mp4";
+        public static string media1 = "tenor.gif";
+        public static string media2 = "fumo_Cirno_city.mp4";
+        public static string media3 = "1614912655857.webm";
+        public static string media4 = "Apex Legends 2021.01.27 - 22.25.30.02.DVR.mp4";
+        public static string media5 = "20210715_022756.jpg";
 
         public static ZoneMetadata Link(string filePath)
         {

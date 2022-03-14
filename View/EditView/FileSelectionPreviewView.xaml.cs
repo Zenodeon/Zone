@@ -17,18 +17,18 @@ using Zone.Component.FileItemCmpt;
 namespace Zone.View.EditView
 {
     /// <summary>
-    /// Interaction logic for FileEditView.xaml
+    /// Interaction logic for FileSelectionPreviewView.xaml
     /// </summary>
-    public partial class FileEditView : UserControl
+    public partial class FileSelectionPreviewView : UserControl
     {
-        public FileEditView()
+        public FileSelectionPreviewView()
         {
             InitializeComponent();
         }
 
-        public void EditFiles(FileItem file)
+        public void PreviewFile(FileItem file)
         {
-            PreviewView.PreviewFile(file);
+            displayElement.Source = new Uri(file.info.filePath);
         }
     }
 }

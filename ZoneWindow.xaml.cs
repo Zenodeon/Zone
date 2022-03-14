@@ -44,6 +44,11 @@ namespace Zone
 
         private void DO(object sender, RoutedEventArgs e)
         {
+            string path = $"{FileInterface.ZoneLink.uriPath}{FileInterface.ZoneLink.media5}";
+            FileItem file = new FileItem(0);
+            CFileInfo fileInfo = new CFileInfo(path);
+            file.dummyConfigure(fileInfo);
+            fileEditView.EditFiles(file); 
         }
 
         private void DO2(object sender, RoutedEventArgs e)

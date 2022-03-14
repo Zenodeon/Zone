@@ -27,9 +27,9 @@ namespace Zone.Component.FileItemCmpt
         public ContentPresenter frame { get; set; }
         public int id { get; set; }
 
-        private bool previewSet = false;
+        public CFileInfo info { get; private set; }
 
-        private CFileInfo fileInfo;
+        private bool thumbnailPreviewSet = false;
 
         ZoneMetadata metadata;
 
@@ -43,15 +43,21 @@ namespace Zone.Component.FileItemCmpt
             frame.Content = this;
         }
 
+        public void dummyConfigure(CFileInfo cFileInfo)
+        {
+            info = cFileInfo;
+            fileNameBlock.Text = info.fileName;
+        }
+
         public void Configure(CFileInfo cFileInfo)
         {
-            fileInfo = cFileInfo;
-            fileNameBlock.Text = fileInfo.fileName;
+            info = cFileInfo;
+            fileNameBlock.Text = info.fileName;
 
             Task.Run(() =>
             {
-                metadata = ZoneLink.Link(fileInfo.filePath);
-                ZoneWindow._instance.zone.GetThumbnail(metadata.fileID, fileInfo.filePath, SetThumbnail);
+                metadata = ZoneLink.Link(info.filePath);
+                ZoneWindow._instance.zone.GetThumbnail(metadata.fileID, info.filePath, SetThumbnail);
                 //ThumbnailExtactorManager._instance.GetThumbnail(fileInfo.filePath, SetThumbnail);
                 //ThumbnailExtactorManager._instance.GetThumbnailPreview(fileInfo.filePath, SetThumbnailPreview);
             });
@@ -64,14 +70,14 @@ namespace Zone.Component.FileItemCmpt
 
         private void SetThumbnailFromStream(MemoryStream thumbnailStream)
         {
-            if (!previewSet)
+            if (!thumbnailPreviewSet)
                 Dispatcher.BeginInvoke(() => AnimationBehavior.SetSourceStream(filePreview, thumbnailStream), DispatcherPriority.Normal);
         }
 
         private void SetThumbnailPreview(MemoryStream thumbnailStream)
         {
             Dispatcher.BeginInvoke(() => AnimationBehavior.SetSourceStream(filePreview, thumbnailStream), DispatcherPriority.Normal);
-            previewSet = true;
+            thumbnailPreviewSet = true;
         }
     }
 }
