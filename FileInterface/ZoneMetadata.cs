@@ -36,7 +36,7 @@ namespace Zone.FileInterface
 
         public void CheckIfNewDevice()
         {
-            if (lastDevicMD5 != UUtility.deviceMD5)
+            if (lastDevicMD5 != CommonAccess.deviceMD5)
                 sharedCount++;
         }
 

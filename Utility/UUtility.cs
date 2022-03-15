@@ -3,22 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DeviceId;
 
 namespace Zone
 {
     public static class UUtility
     {
-        private static string _deviceMD5 = string.Empty;
-        public static string deviceMD5 { 
-            get
-            {
-                if(_deviceMD5 == string.Empty)
-                    _deviceMD5 = GetDeviceMD5();
-                return _deviceMD5;
-            }
-        }
-
         public static string ToBase64String(string text)
         {
             byte[] plainTextBytes = Encoding.UTF8.GetBytes(text);
@@ -54,12 +43,6 @@ namespace Zone
 
                 return sb.ToString();
             }
-        }
-
-        public static string GetDeviceMD5()
-        {
-            string deviceID = new DeviceIdBuilder().AddMachineName().AddMacAddress().ToString();
-            return GetMD5(deviceID);
         }
     }
 }

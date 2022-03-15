@@ -35,8 +35,10 @@ namespace Zone
         {
             DLog.Instantiate();
 
-            InitializeComponent();
+            Unosquare.FFME.Library.FFmpegDirectory = CommonAccess.ffmpegDirectory;
+            Unosquare.FFME.Library.LoadFFmpeg();
 
+            InitializeComponent();
             _instance = this;
 
             new ThumbnailExtactorManager().Instantiate();
@@ -44,7 +46,7 @@ namespace Zone
 
         private void DO(object sender, RoutedEventArgs e)
         {
-            string path = $"{FileInterface.ZoneLink.uriPath}{FileInterface.ZoneLink.media5}";
+            string path = $"{FileInterface.ZoneLink.uriPath}{FileInterface.ZoneLink.media2}";
             FileItem file = new FileItem(0);
             CFileInfo fileInfo = new CFileInfo(path);
             file.dummyConfigure(fileInfo);

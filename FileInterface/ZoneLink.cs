@@ -14,8 +14,6 @@ namespace Zone.FileInterface
 {
     internal static class ZoneLink
     {
-        private static int defaultAllocationSize = 1024;
-
         public static string uriPath = @"D:\TestSite\TestSubjects\New folder (2)\";
         public static string media = "unknown-3.png";
         public static string media1 = "tenor.gif";

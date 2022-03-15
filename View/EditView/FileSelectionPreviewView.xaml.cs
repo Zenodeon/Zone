@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Unosquare.FFME;
 using Zone.Component.FileItemCmpt;
 
 namespace Zone.View.EditView
@@ -26,9 +27,12 @@ namespace Zone.View.EditView
             InitializeComponent();
         }
 
-        public void PreviewFile(FileItem file)
+        public async void PreviewFile(FileItem file)
         {
-            displayElement.Source = new Uri(file.info.filePath);
+            //DLog.Log("Play Call");
+            //DLog.Log(file.info.filePath);
+            //await displayElement.Open(new Uri(file.info.filePath));
+            //await displayElement.Play();
         }
     }
 }
