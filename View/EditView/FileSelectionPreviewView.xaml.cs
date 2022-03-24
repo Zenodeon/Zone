@@ -22,17 +22,34 @@ namespace Zone.View.EditView
     /// </summary>
     public partial class FileSelectionPreviewView : UserControl
     {
+        private bool playing = false;
+
         public FileSelectionPreviewView()
         {
             InitializeComponent();
         }
 
-        public async void PreviewFile(FileItem file)
+        public void PreviewFile(FileItem file)
         {
-            //DLog.Log("Play Call");
-            //DLog.Log(file.info.filePath);
-            //await displayElement.Open(new Uri(file.info.filePath));
+            DLog.Log("Play Call");
+            DLog.Log(file.info.filePath);
+            displayElement.Open(new Uri(file.info.filePath));
+            playing = true;
             //await displayElement.Play();
+        }
+
+        private void TogglePlay(object sender, RoutedEventArgs e)
+        {
+            if (playing)
+            {
+                displayElement.Pause();
+                playing = false;
+            }
+            else
+            {
+                displayElement.Play();
+                playing = true;
+            }
         }
     }
 }

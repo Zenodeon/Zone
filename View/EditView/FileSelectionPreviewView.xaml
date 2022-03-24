@@ -9,5 +9,6 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <ffme:MediaElement Name="displayElement" LoadedBehavior="Play" UnloadedBehavior="Manual"/>
+        <Button Width="48" Height="48" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="20" Click="TogglePlay"/>
     </Grid>
 </UserControl>
