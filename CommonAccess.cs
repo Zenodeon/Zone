@@ -9,7 +9,7 @@ namespace Zone
 {
     public static class CommonAccess
     {
-        public static string ffmpegDirectory = @"C:\ffmpeg\";
+        public static string ffmpegDirectory = @"C:\Users\Admin\Desktop\CodeStuff\Zone\ffmpeg";
         public static string ffmpegPath => $@"{ffmpegDirectory}\ffmpeg.exe";
 
         private static string _deviceMD5 = string.Empty;
